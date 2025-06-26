@@ -1020,21 +1020,24 @@
         }
         
         // Inicializar
-        window.onload = function() {
-            document.querySelectorAll('.required').forEach(field => {
-                if (field.value) {
-                    field.classList.add('filled');
-                } else {
-                    field.classList.add('empty');
-                }
-            });
+        if (typeof window !== 'undefined') {
+            window.onload = function() {
+                document.querySelectorAll('.required').forEach(field => {
+                    if (field.value) {
+                        field.classList.add('filled');
+                    } else {
+                        field.classList.add('empty');
+                    }
+                });
 
-            updateCalculations();
-        };
+                updateCalculations();
+            };
+        }
     
 
 /* --- Added by AI 2025-06-26 --- */
-(function(){
+if (typeof document !== 'undefined') {
+ (function(){
     function restoreDraft(){
         try{
             const draft = JSON.parse(localStorage.getItem('draftCommission') || '{}');
@@ -1063,3 +1066,8 @@
         });
     });
 })();
+}
+
+if (typeof module !== 'undefined') {
+    module.exports = { formatNumber, calcularMultiplicador };
+}

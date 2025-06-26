@@ -1,0 +1,11 @@
+{
+  "name": "comisiones-comercial",
+  "version": "1.0.0",
+  "description": "Herramienta de calculo de comisiones",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.6.1"
+  }
+}

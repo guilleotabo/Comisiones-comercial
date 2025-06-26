@@ -12,3 +12,14 @@ y otros datos relevantes para calcular los pagos según el nivel de cada asesor.
 
 ## Uso
 Abre `index.html` en tu navegador para utilizar la herramienta.
+
+## Pruebas
+
+Se incluye un conjunto básico de pruebas con **Jest**. Ejecuta:
+
+```bash
+npm install
+npm test
+```
+
+para verificar las funciones principales de formato y cálculo.
