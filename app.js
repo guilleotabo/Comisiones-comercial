@@ -618,15 +618,18 @@
             if (statSubtotal) statSubtotal.textContent = formatNumber(subtotal) + ' Gs';
         }
 
-        function toggleSidebar() {
-            const panel = document.querySelector('.left-panel');
-            const btn = document.getElementById('toggleSidebarBtn');
+       function toggleSidebar() {
+           const panel = document.querySelector('.left-panel');
+           const btn = document.getElementById('toggleSidebarBtn');
+            const openBtn = document.getElementById('openSidebarBtn');
             if (panel.classList.contains('collapsed')) {
                 panel.classList.remove('collapsed');
                 btn.textContent = '⬅️ Ocultar';
+                if (openBtn) openBtn.style.display = 'none';
             } else {
                 panel.classList.add('collapsed');
                 btn.textContent = '➡️ Mostrar';
+                if (openBtn) openBtn.style.display = 'block';
             }
         }
         

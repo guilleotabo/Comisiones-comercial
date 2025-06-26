@@ -45,6 +45,20 @@
         .left-panel.collapsed {
             display: none;
         }
+
+        .open-sidebar-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            padding: 6px 10px;
+            background: #006D77;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: none;
+        }
         
         .header {
             background: linear-gradient(135deg, #006D77 0%, #83C5BE 100%);
