@@ -83,7 +83,9 @@
         function formatAndCalculate(input) {
             if (isCalculating) return;
             isCalculating = true;
-            
+
+            validateInput(input);
+
             let value = input.value.replace(/[^0-9]/g, '');
             
             if (input.id === 'montoInterno' || input.id === 'montoExterno' || input.id === 'montoRecuperado') {
@@ -145,11 +147,34 @@
             if (!input.value) return 0;
             return parseInt(input.value.replace(/\./g, ''), 10) || 0;
         }
+
+        function validateInput(input) {
+            const id = input.id;
+            let num = parseInt(input.value.replace(/\./g, ''), 10) || 0;
+
+            if (['conversion', 'empatia', 'proceso', 'mora'].includes(id)) {
+                num = Math.max(0, Math.min(100, num));
+            } else if (['cantidadDesembolsos', 'menorSemana'].includes(id)) {
+                num = Math.max(0, Math.min(999, num));
+            } else if (['montoInterno', 'montoExterno', 'montoRecuperado'].includes(id)) {
+                num = Math.max(0, Math.min(10000000000, num));
+            }
+
+            input.value = num.toString();
+        }
         
         // Calcular multiplicador
         function calcularMultiplicador(tipo, valor) {
             const tabla = multiplicadores[tipo];
             if (!tabla) return 0;
+
+            if (tipo === 'mora') {
+                for (let i = tabla.length - 1; i >= 0; i--) {
+                    if (valor >= tabla[i].min) return tabla[i].mult;
+                }
+                return 0;
+            }
+
             for (let item of tabla) {
                 if (valor >= item.min) return item.mult;
             }
@@ -358,8 +383,8 @@
             // Tabla Mora
             const multMora = calcularMultiplicador('mora', mora);
             let classMora = 'multiplier-table';
-            if (mora <= 7) classMora += ' good';
-            else if (mora < 10) classMora += ' warning';
+            if (mora <= 2) classMora += ' good';
+            else if (mora <= 7) classMora += ' warning';
             else classMora += ' danger';
 
             html += `<div class="${classMora}">
@@ -380,7 +405,7 @@
             container.innerHTML = html;
             
             // Actualizar cálculo
-            const totalMult = multConv * multEmp * multProc * multMora;
+            const totalMult = Math.max(multConv * multEmp * multProc * multMora, 0.1);
             document.getElementById('multiplicadorCalc').textContent =
                 conversion && empatia && proceso && mora ?
                 `Cálculo: ${multConv.toFixed(2)} × ${multEmp.toFixed(2)} × ${multProc.toFixed(2)} × ${multMora.toFixed(2)} = ${(totalMult*100).toFixed(1)}%` :
@@ -543,6 +568,10 @@
             // Llave monto interno
             if (!datos.cumpleLlaveMonto && datos.nivelInterno >= 0) {
                 alertas.push(`Te faltan ${6 - datos.cantidad} desembolsos para activar premio interno (${formatNumber(pagos.montoInterno[datos.nivelInterno])} Gs)`);
+            }
+
+            if (datos.mora > 10) {
+                alertas.push('❗ Mora crítica: revisa tu cartera de clientes');
             }
             
             if (alertas.length > 0) {
@@ -809,6 +838,7 @@
                 conversion: values.conversion,
                 empatia: values.empatia,
                 proceso: values.proceso,
+                mora: values.mora,
                 multiConversion: result.multiConversion,
                 multiEmpatia: result.multiEmpatia,
                 multiProceso: result.multiProceso,
@@ -829,8 +859,18 @@
                 conversion: parseFloat(document.getElementById('conversion').value) || 0,
                 empatia: parseFloat(document.getElementById('empatia').value) || 0,
                 proceso: parseFloat(document.getElementById('proceso').value) || 0,
+                mora: parseFloat(document.getElementById('mora').value) || 0,
                 nivelEquipo: parseInt(document.getElementById('nivelEquipo').value, 10)
             };
+
+            if (values.montoInterno > 0 && values.montoRecuperado > values.montoInterno * 0.5) {
+                if (!updateCalculations.recAlertShown) {
+                    alert('⚠️ Recuperados superan el 50% del monto interno');
+                    updateCalculations.recAlertShown = true;
+                }
+            } else {
+                updateCalculations.recAlertShown = false;
+            }
         
             const info = updateFields(values);
             const result = computeBonuses(values, info);
@@ -1037,27 +1077,50 @@
 
 /* --- Added by AI 2025-06-26 --- */
 (function(){
+    let saveTimer;
+    const indicator = document.getElementById('saveIndicator');
+
+    function showIndicator(){
+        if(indicator){
+            indicator.textContent = '⚡ Guardando...';
+            indicator.classList.add('saving');
+        }
+    }
+
+    function hideIndicator(){
+        if(indicator){
+            indicator.classList.remove('saving');
+            indicator.textContent = '';
+        }
+    }
+
     function restoreDraft(){
         try{
             const draft = JSON.parse(localStorage.getItem('draftCommission') || '{}');
             Object.entries(draft).forEach(([id,val])=>{
                const el = document.getElementById(id);
                if(!el) return;
-               if(el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA'){
-                  el.value = val;
-                  // trigger any event that updates calculations
-                  el.dispatchEvent(new Event('input', {bubbles:true}));
+               el.value = val;
+               if(el.classList.contains('required')){
+                  el.classList.add(val ? 'filled' : 'empty');
                }
             });
         }catch(e){console.warn('No draft to restore', e);}
     }
+
     function autosave(e){
         const el = e.target;
         if(!el.id) return;
         const draft = JSON.parse(localStorage.getItem('draftCommission') || '{}');
         draft[el.id] = el.value;
-        localStorage.setItem('draftCommission', JSON.stringify(draft));
+        showIndicator();
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(function(){
+            localStorage.setItem('draftCommission', JSON.stringify(draft));
+            hideIndicator();
+        }, 500);
     }
+
     document.addEventListener('DOMContentLoaded', function(){
         restoreDraft();
         document.querySelectorAll('input, select, textarea').forEach(function(el){
