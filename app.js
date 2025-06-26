@@ -893,7 +893,7 @@
                     }
                 });
                 document.getElementById('nivelAnterior').value = '2';
-                document.getElementById('nivelEquipo').value = '1';
+                document.getElementById('nivelEquipo').value = '2';
                 updateCalculations();
             }
         }
