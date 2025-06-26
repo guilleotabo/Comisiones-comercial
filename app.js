@@ -894,6 +894,22 @@
                 });
                 document.getElementById('nivelAnterior').value = '2';
                 document.getElementById('nivelEquipo').value = '1';
+
+                const conv = document.getElementById('conversion');
+                conv.value = '8';
+                conv.classList.add('filled');
+                conv.classList.remove('empty');
+
+                const emp = document.getElementById('empatia');
+                emp.value = '96';
+                emp.classList.add('filled');
+                emp.classList.remove('empty');
+
+                const proc = document.getElementById('proceso');
+                proc.value = '95';
+                proc.classList.add('filled');
+                proc.classList.remove('empty');
+
                 updateCalculations();
             }
         }
