@@ -921,6 +921,11 @@
                 proc.classList.add('filled');
                 proc.classList.remove('empty');
 
+                const menorSemana = document.getElementById('menorSemana');
+                menorSemana.value = '2';
+                menorSemana.classList.add('filled');
+                menorSemana.classList.remove('empty');
+
                 updateCalculations();
             }
         }
