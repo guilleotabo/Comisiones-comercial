@@ -5,6 +5,16 @@
             box-sizing: border-box;
         }
         
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #e8eaf0;
@@ -15,10 +25,11 @@
         }
         
         .container {
+            width: 100%;
+            padding: 0 10px;
+            box-sizing: border-box;
             display: flex;
             height: 100vh;
-            max-width: 1500px;
-            margin: 0 auto;
             gap: 1px;
             background: #ccc;
         }
