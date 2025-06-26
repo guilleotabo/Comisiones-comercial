@@ -914,6 +914,9 @@
                 proc.classList.add('filled');
                 proc.classList.remove('empty');
 
+                // Limpiar el localStorage también
+                localStorage.removeItem('draftCommission');
+
                 updateCalculations();
             }
         }
