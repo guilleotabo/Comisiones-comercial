@@ -229,8 +229,12 @@
                 document.getElementById('montoInterno').classList.remove('empty');
             } else if (tipo === 'externo') {
                 document.getElementById('montoExterno').value = formatNumber(valor);
+                document.getElementById('montoExterno').classList.add('filled');
+                document.getElementById('montoExterno').classList.remove('empty');
             } else if (tipo === 'recuperado') {
                 document.getElementById('montoRecuperado').value = formatNumber(valor);
+                document.getElementById('montoRecuperado').classList.add('filled');
+                document.getElementById('montoRecuperado').classList.remove('empty');
             } else if (tipo === 'cantidad') {
                 document.getElementById('cantidadDesembolsos').value = valor;
                 document.getElementById('cantidadDesembolsos').classList.add('filled');
