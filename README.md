@@ -12,3 +12,6 @@ y otros datos relevantes para calcular los pagos según el nivel de cada asesor.
 
 ## Uso
 Abre `index.html` en tu navegador para utilizar la herramienta.
+
+## Licencia
+Distribuido bajo los términos de la licencia MIT (SPDX: MIT). Consulta el archivo [LICENSE](LICENSE) para más informacion.
