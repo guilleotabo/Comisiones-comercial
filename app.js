@@ -1049,8 +1049,23 @@
         // Inicializar
         window.onload = function() {
             document.querySelectorAll('.required').forEach(field => {
-                field.classList.add('empty');
+                if (field.value) {
+                    field.classList.add('filled');
+                } else {
+                    field.classList.add('empty');
+                }
             });
+
+            const menorSemanaInput = document.getElementById('menorSemana');
+            if (menorSemanaInput && menorSemanaInput.value) {
+                menorSemanaInput.classList.add('filled');
+            }
+
+            const moraInput = document.getElementById('clientesMora');
+            if (moraInput && !moraInput.value) {
+                moraInput.classList.add('invalid');
+            }
+
             updateCalculations();
         };
     
