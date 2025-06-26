@@ -897,7 +897,7 @@
                     }
                 });
                 document.getElementById('nivelAnterior').value = '2';
-                document.getElementById('nivelEquipo').value = '1';
+                document.getElementById('nivelEquipo').value = '2';
 
                 const conv = document.getElementById('conversion');
                 conv.value = '8';
