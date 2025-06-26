@@ -893,9 +893,21 @@
         
         // Descargar PDF
         function descargarPDF() {
+            function escapeHTML(str) {
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+            }
+
+            function getValue(id, prop = 'value') {
+                const el = document.getElementById(id);
+                return escapeHTML(el ? el[prop] : '');
+            }
+
             // Guardar valores actuales
-            const comisionTotal = document.getElementById('totalComision').textContent;
-            const nivel = document.getElementById('statNivel').textContent;
+            const comisionTotal = getValue('totalComision', 'textContent');
+            const nivel = getValue('statNivel', 'textContent');
             const fecha = new Date().toLocaleDateString('es-PY');
             
             // Crear ventana con resumen para imprimir
@@ -928,75 +940,75 @@
                         <h3>Resumen de Volumen</h3>
                         <div class="row">
                             <span>Monto Interno:</span>
-                            <span>${document.getElementById('montoInterno').value || '0'}</span>
+                            <span>${getValue('montoInterno') || '0'}</span>
                         </div>
                         <div class="row">
                             <span>Monto Externo:</span>
-                            <span>${document.getElementById('montoExterno').value || '0'}</span>
+                            <span>${getValue('montoExterno') || '0'}</span>
                         </div>
                         <div class="row">
                             <span>Recuperados +3M:</span>
-                            <span>${document.getElementById('montoRecuperado').value || '0'}</span>
+                            <span>${getValue('montoRecuperado') || '0'}</span>
                         </div>
                         <div class="row">
                             <span>Cantidad Desembolsos:</span>
-                            <span>${document.getElementById('cantidadDesembolsos').value || '0'}</span>
+                            <span>${getValue('cantidadDesembolsos') || '0'}</span>
                         </div>
                     </div>
-                    
+
                     <div class="section">
                         <h3>Indicadores de Calidad</h3>
                         <div class="row">
                             <span>Conversión:</span>
-                            <span>${document.getElementById('conversion').value || '0'}%</span>
+                            <span>${getValue('conversion') || '0'}%</span>
                         </div>
                         <div class="row">
                             <span>Empatía/Mystery:</span>
-                            <span>${document.getElementById('empatia').value || '0'}%</span>
+                            <span>${getValue('empatia') || '0'}%</span>
                         </div>
                         <div class="row">
                             <span>Proceso:</span>
-                            <span>${document.getElementById('proceso').value || '0'}%</span>
+                            <span>${getValue('proceso') || '0'}%</span>
                         </div>
                         <div class="row">
                             <span><strong>Multiplicador Final:</strong></span>
-                            <span><strong>${document.getElementById('statMulti').textContent}</strong></span>
+                            <span><strong>${getValue('statMulti', 'textContent')}</strong></span>
                         </div>
                     </div>
-                    
+
                     <div class="section">
                         <h3>Detalle de Comisión</h3>
                         <div class="row">
                             <span>Base fija:</span>
-                            <span>${document.getElementById('calcBase').textContent}</span>
+                            <span>${getValue('calcBase', 'textContent')}</span>
                         </div>
                         <div class="row">
                             <span>Premio carrera:</span>
-                            <span>${document.getElementById('calcCarrera').textContent}</span>
+                            <span>${getValue('calcCarrera', 'textContent')}</span>
                         </div>
                         <div class="row">
                             <span>Monto Interno:</span>
-                            <span>${document.getElementById('calcInterno').textContent}</span>
+                            <span>${getValue('calcInterno', 'textContent')}</span>
                         </div>
                         <div class="row">
                             <span>Monto Externo:</span>
-                            <span>${document.getElementById('calcExterno').textContent}</span>
+                            <span>${getValue('calcExterno', 'textContent')}</span>
                         </div>
                         <div class="row">
                             <span>Recuperados:</span>
-                            <span>${document.getElementById('calcRecuperado').textContent}</span>
+                            <span>${getValue('calcRecuperado', 'textContent')}</span>
                         </div>
                         <div class="row">
                             <span>Cantidad:</span>
-                            <span>${document.getElementById('calcCantidad').textContent}</span>
+                            <span>${getValue('calcCantidad', 'textContent')}</span>
                         </div>
                         <div class="row">
                             <span>Equipo:</span>
-                            <span>${document.getElementById('calcEquipo').textContent}</span>
+                            <span>${getValue('calcEquipo', 'textContent')}</span>
                         </div>
                         <div class="row">
                             <span>Mora:</span>
-                            <span>${document.getElementById('mora').value || '0'}%</span>
+                            <span>${getValue('mora') || '0'}%</span>
                         </div>
                     </div>
                     
