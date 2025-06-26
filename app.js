@@ -107,6 +107,27 @@
                     input.classList.add('empty');
                 }
             }
+
+            if (input.id === 'menorSemana') {
+                if (input.value) {
+                    input.classList.add('filled');
+                    input.classList.remove('empty');
+                } else {
+                    input.classList.remove('filled');
+                    input.classList.add('empty');
+                }
+            }
+
+            if (input.id === 'clientesMora') {
+                const valNum = parseInt(input.value) || 0;
+                if (valNum > 0) {
+                    input.classList.add('filled');
+                    input.classList.remove('invalid');
+                } else {
+                    input.classList.remove('filled');
+                    input.classList.add('invalid');
+                }
+            }
             
             isCalculating = false;
             updateCalculations();
@@ -593,6 +614,20 @@
             fill.innerHTML = `<span style="font-size: 16px;">${porcentaje.toFixed(1)}%</span>`;
             
             montoText.textContent = formatNumber(subtotal) + ' Gs';
+            const statSubtotal = document.getElementById('statSubtotal');
+            if (statSubtotal) statSubtotal.textContent = formatNumber(subtotal) + ' Gs';
+        }
+
+        function toggleSidebar() {
+            const panel = document.querySelector('.left-panel');
+            const btn = document.getElementById('toggleSidebarBtn');
+            if (panel.classList.contains('collapsed')) {
+                panel.classList.remove('collapsed');
+                btn.textContent = '⬅️ Ocultar';
+            } else {
+                panel.classList.add('collapsed');
+                btn.textContent = '➡️ Mostrar';
+            }
         }
         
         // Función para mostrar/ocultar tabla de mora
@@ -652,6 +687,24 @@
             const proceso = parseFloat(document.getElementById('proceso').value) || 0;
             const clientesMora = getNumericValue('clientesMora');
             const nivelEquipo = parseInt(document.getElementById('nivelEquipo').value);
+
+            const menorSemanaInput = document.getElementById('menorSemana');
+            if (menorSemanaInput.value) {
+                menorSemanaInput.classList.add('filled');
+                menorSemanaInput.classList.remove('empty');
+            } else {
+                menorSemanaInput.classList.remove('filled');
+                menorSemanaInput.classList.add('empty');
+            }
+
+            const moraInput = document.getElementById('clientesMora');
+            if (clientesMora > 0) {
+                moraInput.classList.add('filled');
+                moraInput.classList.remove('invalid');
+            } else {
+                moraInput.classList.remove('filled');
+                moraInput.classList.add('invalid');
+            }
             
             // Actualizar barras
             const nivelInterno = updateProgressBar('interno', montoInterno, 'barraInterno', 'infoInterno');
@@ -833,6 +886,10 @@
                     if (input.classList.contains('required')) {
                         input.classList.remove('filled');
                         input.classList.add('empty');
+                    }
+                    if (input.id === 'clientesMora') {
+                        input.classList.remove('filled');
+                        input.classList.add('invalid');
                     }
                 });
                 document.getElementById('nivelAnterior').value = '2';
