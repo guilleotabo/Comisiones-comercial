@@ -144,6 +144,11 @@
             border-color: #F44336;
             background: #FFEBEE;
         }
+
+        .input-field.required.empty {
+            border-color: #F44336 !important;
+            box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.2);
+        }
         
         .help-text {
             font-size: 10px;
