@@ -16,5 +16,10 @@ Se recomienda utilizar **Node.js 18** para desarrollar y ejecutar los scripts de
 ## Uso
 Abre `index.html` en tu navegador para utilizar la herramienta.
 
+## Pruebas
+La instalación de dependencias con `npm install` requiere acceso a internet.
+Si trabajas sin conexión, configura un registro npm local o incluye un
+directorio `node_modules` previamente poblado para ejecutar las pruebas.
+
 ## Licencia
 Distribuido bajo los términos de la licencia MIT (SPDX: MIT). Consulta el archivo [LICENSE](LICENSE) para más informacion.
