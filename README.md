@@ -13,5 +13,10 @@ y otros datos relevantes para calcular los pagos según el nivel de cada asesor.
 ## Uso
 Abre `index.html` en tu navegador para utilizar la herramienta.
 
+## Pruebas
+La instalación de dependencias con `npm install` requiere acceso a internet.
+Si trabajas sin conexión, configura un registro npm local o incluye un
+directorio `node_modules` previamente poblado para ejecutar las pruebas.
+
 ## Licencia
 Distribuido bajo los términos de la licencia MIT (SPDX: MIT). Consulta el archivo [LICENSE](LICENSE) para más informacion.
