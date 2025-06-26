@@ -1059,10 +1059,6 @@
                 }
             });
 
-            const menorSemanaInput = document.getElementById('menorSemana');
-            if (menorSemanaInput && menorSemanaInput.value) {
-                menorSemanaInput.classList.add('filled');
-            }
 
             const moraInput = document.getElementById('clientesMora');
             if (moraInput && !moraInput.value) {
