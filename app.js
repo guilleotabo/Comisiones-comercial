@@ -659,18 +659,7 @@
         
         
         // Cálculo principal
-        function updateCalculations() {
-            const nivelAnterior = parseInt(document.getElementById('nivelAnterior').value, 10);
-            const montoInterno = getNumericValue('montoInterno');
-            const montoExterno = getNumericValue('montoExterno');
-            const montoRecuperado = getNumericValue('montoRecuperado');
-            const cantidad = getNumericValue('cantidadDesembolsos');
-            const menorSemana = getNumericValue('menorSemana');
-            const conversion = parseFloat(document.getElementById('conversion').value) || 0;
-            const empatia = parseFloat(document.getElementById('empatia').value) || 0;
-            const proceso = parseFloat(document.getElementById('proceso').value) || 0;
-            const nivelEquipo = parseInt(document.getElementById('nivelEquipo').value, 10);
-
+        function updateFields(values) {
             const menorSemanaInput = document.getElementById('menorSemana');
             const menorSemanaVal = parseInt(menorSemanaInput.value, 10) || 0;
             if (menorSemanaVal >= 2) {
@@ -680,171 +669,172 @@
                 menorSemanaInput.classList.remove('filled');
                 menorSemanaInput.classList.add('empty');
             }
-
-            
-            // Actualizar barras
-            const nivelInterno = updateProgressBar('interno', montoInterno, 'barraInterno', 'infoInterno');
-            const nivelExterno = updateProgressBar('externo', montoExterno, 'barraExterno', 'infoExterno');
-            const nivelRecuperado = updateProgressBar('recuperado', montoRecuperado, 'barraRecuperado', 'infoRecuperado');
-            const nivelCantidadReal = updateProgressBar('cantidad', cantidad, 'barraCantidad', 'infoCantidad');
-            const nivelCantidadLimitado = updateCantidadConLlave(cantidad, menorSemana);
-            
-            // Calcular nivel actual (menor entre los alcanzados) - Ahora incluye recuperados
+        
+            const nivelInterno = updateProgressBar('interno', values.montoInterno, 'barraInterno', 'infoInterno');
+            const nivelExterno = updateProgressBar('externo', values.montoExterno, 'barraExterno', 'infoExterno');
+            const nivelRecuperado = updateProgressBar('recuperado', values.montoRecuperado, 'barraRecuperado', 'infoRecuperado');
+            const nivelCantidadReal = updateProgressBar('cantidad', values.cantidad, 'barraCantidad', 'infoCantidad');
+            const nivelCantidadLimitado = updateCantidadConLlave(values.cantidad, values.menorSemana);
+        
             let nivelesAlcanzadosActual = [];
             if (nivelInterno >= 0) nivelesAlcanzadosActual.push(nivelInterno);
             if (nivelExterno >= 0) nivelesAlcanzadosActual.push(nivelExterno);
             if (nivelRecuperado >= 0) nivelesAlcanzadosActual.push(nivelRecuperado);
             if (nivelCantidadReal >= 0) nivelesAlcanzadosActual.push(nivelCantidadReal);
-            
             let nivelActualMes = nivelesAlcanzadosActual.length > 0 ? Math.min(...nivelesAlcanzadosActual) : 0;
-            
-            // El nivel real es el menor entre el actual y el anterior
-            const nivelActual = Math.min(nivelActualMes, nivelAnterior);
+            const nivelActual = Math.min(nivelActualMes, values.nivelAnterior);
             document.getElementById('statNivel').textContent = niveles[nivelActual];
-            
-            // Actualizar multiplicadores
+        
             const multiplicadorTotal = updateMultiplicadorTables();
-            
-            // Actualizar llave de monto
-            const cumpleLlaveMonto = cantidad >= 6;
-            document.getElementById('internoLlave').textContent = cumpleLlaveMonto ? 'Llave: ✓ 6 desem.' : 'Llave: ❌ Min 6 desem.';
+        
+            const cumpleLlaveMonto = values.cantidad >= 6;
+            document.getElementById('internoLlave').textContent = cumpleLlaveMonto ? 'Llave: \u2713 6 desem.' : 'Llave: \u274C Min 6 desem.';
             document.getElementById('internoLlave').className = cumpleLlaveMonto ? 'llave text-success' : 'llave text-danger';
-            
-            // Actualizar status
-            document.getElementById('internoStatus').textContent = nivelInterno >= 0 ? `✓ Nivel: ${niveles[nivelInterno]}` : '';
-            document.getElementById('cantidadStatus').textContent = cantidad >= metas.cantidad[nivelActual] ? `✓ ${cantidad} > meta ${metas.cantidad[nivelActual]}` : `${cantidad}/${metas.cantidad[nivelActual]}`;
-            
-            // Calcular carrera ANTES de usarla en updateEquipoBar
+        
+            document.getElementById('internoStatus').textContent = nivelInterno >= 0 ? `\u2713 Nivel: ${niveles[nivelInterno]}` : '';
+            document.getElementById('cantidadStatus').textContent = values.cantidad >= metas.cantidad[nivelActual] ? `\u2713 ${values.cantidad} > meta ${metas.cantidad[nivelActual]}` : `${values.cantidad}/${metas.cantidad[nivelActual]}`;
+        
             let nivelesAlcanzados = [];
             if (nivelInterno >= 0) nivelesAlcanzados.push(nivelInterno);
             if (nivelExterno >= 0) nivelesAlcanzados.push(nivelExterno);
             if (nivelRecuperado >= 0) nivelesAlcanzados.push(nivelRecuperado);
             if (nivelCantidadReal >= 0) nivelesAlcanzados.push(nivelCantidadReal);
-            
             let nivelCarreraActualMes = nivelesAlcanzados.length > 0 ? Math.min(...nivelesAlcanzados) : -1;
-            let nivelCarrera = Math.min(nivelCarreraActualMes, nivelAnterior);
-            
-            // Actualizar barra de carrera
+            let nivelCarrera = Math.min(nivelCarreraActualMes, values.nivelAnterior);
+        
             const bonusCarrera = updateCarreraBar(nivelCarrera);
-            
-            // Actualizar barra de equipo con nivelCarrera ya calculado
-            const bonusEquipoCalculado = updateEquipoBar(nivelEquipo, nivelCarrera);
-            
-            // CAMBIO: Calcular componentes aunque falten campos requeridos
-            // Calcular componentes disponibles
-            const base = pagos.base;
-            const bonusInterno = (nivelInterno >= 0 && cumpleLlaveMonto) ? pagos.montoInterno[nivelInterno] : 0;
-            const bonusExterno = nivelExterno >= 0 ? pagos.montoExterno[nivelExterno] : 0;
-            const bonusRecuperado = nivelRecuperado >= 0 ? pagos.montoRecuperado[nivelRecuperado] : 0;
-            const bonusCantidad = nivelCantidadLimitado >= 0 ? pagos.cantidad[nivelCantidadLimitado] : 0;
-            
-            let bonusEquipo = 0;
-            if (nivelCarrera >= 3 && nivelEquipo >= 3) {
-                bonusEquipo = pagos.equipo[nivelEquipo];
-            }
-            
-            const subtotal = base + bonusCarrera + bonusInterno + bonusExterno + bonusRecuperado + bonusCantidad + bonusEquipo;
-            
-            // SIEMPRE actualizar barra de subtotal con lo que haya
-            updateSubtotalBar(subtotal);
-            
-            // Si faltan campos requeridos, mostrar parciales pero sin multiplicadores
-            if (!checkRequiredFields()) {
-                document.getElementById('statMulti').textContent = '0%';
-                document.getElementById('statComision').textContent = formatNumber(subtotal) + ' Gs (parcial)';
-                
-                document.getElementById('calcBase').textContent = formatNumber(base) + ' Gs';
-                document.getElementById('calcCarrera').textContent = formatNumber(bonusCarrera) + ' Gs';
-                document.getElementById('calcInterno').textContent = formatNumber(bonusInterno) + ' Gs';
-                document.getElementById('calcExterno').textContent = formatNumber(bonusExterno) + ' Gs';
-                document.getElementById('calcRecuperado').textContent = formatNumber(bonusRecuperado) + ' Gs';
-                document.getElementById('calcCantidad').textContent = formatNumber(bonusCantidad) + ' Gs';
-                document.getElementById('calcEquipo').textContent = formatNumber(bonusEquipo) + ' Gs';
-                document.getElementById('calcSubtotal').textContent = formatNumber(subtotal) + ' Gs';
-                document.getElementById('calcMultiplicador').textContent = '0% (faltan campos)';
-                document.getElementById('totalComision').textContent = formatNumber(subtotal) + ' Gs';
-                
-                // Generar sugerencias parciales
-                const multiConversion = calcularMultiplicador('conversion', conversion);
-                const multiEmpatia = calcularMultiplicador('empatia', empatia);
-                const multiProceso = calcularMultiplicador('proceso', proceso);
-                
-                generarSugerencias({
-                    montoInterno,
-                    nivelInterno,
-                    nivelExterno,
-                    nivelRecuperado,
-                    nivelCantidad: nivelCantidadReal,
-                    nivelCantidadLimitado,
-                    nivelCarrera,
-                    nivelCarreraActualMes,
-                    menorSemana,
-                    cantidad,
-                    conversion,
-                    empatia,
-                    proceso,
-                    multiConversion,
-                    multiEmpatia,
-                    multiProceso,
-                    cumpleLlaveMonto,
-                    bonusCantidadPotencial: nivelCantidadReal >= 0 ? pagos.cantidad[nivelCantidadReal] : 0,
-                    subtotal
-                });
-                
-                return;
-            }
-            
-            // Con todos los campos completos, calcular con multiplicadores
-            const totalVariable = Math.round((subtotal - base) * multiplicadorTotal);
-            const total = base + totalVariable;
-            
-            // Actualizar UI
-            document.getElementById('calcBase').textContent = formatNumber(base) + ' Gs';
-            document.getElementById('calcCarrera').textContent = formatNumber(bonusCarrera) + ' Gs';
-            document.getElementById('calcInterno').textContent = formatNumber(bonusInterno) + ' Gs';
-            document.getElementById('calcExterno').textContent = formatNumber(bonusExterno) + ' Gs';
-            document.getElementById('calcRecuperado').textContent = formatNumber(bonusRecuperado) + ' Gs';
-            document.getElementById('calcCantidad').textContent = formatNumber(bonusCantidad) + ' Gs';
-            document.getElementById('calcEquipo').textContent = formatNumber(bonusEquipo) + ' Gs';
-            document.getElementById('calcSubtotal').textContent = formatNumber(subtotal) + ' Gs';
-            document.getElementById('calcMultiplicador').textContent = (multiplicadorTotal * 100).toFixed(1) + '%';
-            document.getElementById('totalComision').textContent = formatNumber(total) + ' Gs';
-            
-            if (nivelCantidadLimitado < nivelCantidadReal && menorSemana < 2) {
-                document.getElementById('cantidadLlaveInfo').innerHTML = '<span class="tooltip" data-tip="Sin premio por llave semanal">⚠️</span>';
-            } else {
-                document.getElementById('cantidadLlaveInfo').textContent = '';
-            }
-            
-            document.getElementById('statMulti').textContent = (multiplicadorTotal * 100).toFixed(1) + '%';
-            document.getElementById('statComision').textContent = formatNumber(total) + ' Gs';
-            
-            // Calcular multiplicadores individuales para sugerencias
-            const multiConversion = calcularMultiplicador('conversion', conversion);
-            const multiEmpatia = calcularMultiplicador('empatia', empatia);
-            const multiProceso = calcularMultiplicador('proceso', proceso);
-            
-            generarSugerencias({
-                montoInterno,
+            const bonusEquipoCalculado = updateEquipoBar(values.nivelEquipo, nivelCarrera);
+        
+            return {
                 nivelInterno,
                 nivelExterno,
                 nivelRecuperado,
-                nivelCantidad: nivelCantidadReal,
+                nivelCantidadReal,
                 nivelCantidadLimitado,
+                multiplicadorTotal,
                 nivelCarrera,
                 nivelCarreraActualMes,
-                menorSemana,
-                cantidad,
-                conversion,
-                empatia,
-                proceso,
+                bonusCarrera,
+                bonusEquipoCalculado,
+                cumpleLlaveMonto
+            };
+        }
+        
+        function computeBonuses(values, info) {
+            const base = pagos.base;
+            const bonusInterno = (info.nivelInterno >= 0 && info.cumpleLlaveMonto) ? pagos.montoInterno[info.nivelInterno] : 0;
+            const bonusExterno = info.nivelExterno >= 0 ? pagos.montoExterno[info.nivelExterno] : 0;
+            const bonusRecuperado = info.nivelRecuperado >= 0 ? pagos.montoRecuperado[info.nivelRecuperado] : 0;
+            const bonusCantidad = info.nivelCantidadLimitado >= 0 ? pagos.cantidad[info.nivelCantidadLimitado] : 0;
+        
+            let bonusEquipo = 0;
+            if (info.nivelCarrera >= 3 && values.nivelEquipo >= 3) {
+                bonusEquipo = pagos.equipo[values.nivelEquipo];
+            }
+        
+            const subtotal = base + info.bonusCarrera + bonusInterno + bonusExterno + bonusRecuperado + bonusCantidad + bonusEquipo;
+        
+            const allFields = checkRequiredFields();
+        
+            let total = subtotal;
+            let totalVariable = 0;
+            if (allFields) {
+                totalVariable = Math.round((subtotal - base) * info.multiplicadorTotal);
+                total = base + totalVariable;
+            }
+        
+            const multiConversion = calcularMultiplicador('conversion', values.conversion);
+            const multiEmpatia = calcularMultiplicador('empatia', values.empatia);
+            const multiProceso = calcularMultiplicador('proceso', values.proceso);
+        
+            return {
+                base,
+                bonusCarrera: info.bonusCarrera,
+                bonusInterno,
+                bonusExterno,
+                bonusRecuperado,
+                bonusCantidad,
+                bonusEquipo,
+                subtotal,
+                total,
+                totalVariable,
+                multiplicadorTotal: info.multiplicadorTotal,
+                allFields,
                 multiConversion,
                 multiEmpatia,
-                multiProceso,
-                cumpleLlaveMonto,
-                bonusCantidadPotencial: nivelCantidadReal >= 0 ? pagos.cantidad[nivelCantidadReal] : 0,
-                subtotal
+                multiProceso
+            };
+        }
+        
+        function renderTotals(values, info, result) {
+            updateSubtotalBar(result.subtotal);
+        
+            document.getElementById('calcBase').textContent = formatNumber(result.base) + ' Gs';
+            document.getElementById('calcCarrera').textContent = formatNumber(result.bonusCarrera) + ' Gs';
+            document.getElementById('calcInterno').textContent = formatNumber(result.bonusInterno) + ' Gs';
+            document.getElementById('calcExterno').textContent = formatNumber(result.bonusExterno) + ' Gs';
+            document.getElementById('calcRecuperado').textContent = formatNumber(result.bonusRecuperado) + ' Gs';
+            document.getElementById('calcCantidad').textContent = formatNumber(result.bonusCantidad) + ' Gs';
+            document.getElementById('calcEquipo').textContent = formatNumber(result.bonusEquipo) + ' Gs';
+            document.getElementById('calcSubtotal').textContent = formatNumber(result.subtotal) + ' Gs';
+        
+            if (!result.allFields) {
+                document.getElementById('statMulti').textContent = '0%';
+                document.getElementById('statComision').textContent = formatNumber(result.subtotal) + ' Gs (parcial)';
+                document.getElementById('calcMultiplicador').textContent = '0% (faltan campos)';
+                document.getElementById('totalComision').textContent = formatNumber(result.subtotal) + ' Gs';
+            } else {
+                document.getElementById('calcMultiplicador').textContent = (result.multiplicadorTotal * 100).toFixed(1) + '%';
+                document.getElementById('totalComision').textContent = formatNumber(result.total) + ' Gs';
+                if (info.nivelCantidadLimitado < info.nivelCantidadReal && values.menorSemana < 2) {
+                    document.getElementById('cantidadLlaveInfo').innerHTML = '<span class="tooltip" data-tip="Sin premio por llave semanal">\u26A0\uFE0F</span>';
+                } else {
+                    document.getElementById('cantidadLlaveInfo').textContent = '';
+                }
+                document.getElementById('statMulti').textContent = (result.multiplicadorTotal * 100).toFixed(1) + '%';
+                document.getElementById('statComision').textContent = formatNumber(result.total) + ' Gs';
+            }
+        
+            generarSugerencias({
+                montoInterno: values.montoInterno,
+                nivelInterno: info.nivelInterno,
+                nivelExterno: info.nivelExterno,
+                nivelRecuperado: info.nivelRecuperado,
+                nivelCantidad: info.nivelCantidadReal,
+                nivelCantidadLimitado: info.nivelCantidadLimitado,
+                nivelCarrera: info.nivelCarrera,
+                nivelCarreraActualMes: info.nivelCarreraActualMes,
+                menorSemana: values.menorSemana,
+                cantidad: values.cantidad,
+                conversion: values.conversion,
+                empatia: values.empatia,
+                proceso: values.proceso,
+                multiConversion: result.multiConversion,
+                multiEmpatia: result.multiEmpatia,
+                multiProceso: result.multiProceso,
+                cumpleLlaveMonto: info.cumpleLlaveMonto,
+                bonusCantidadPotencial: info.nivelCantidadReal >= 0 ? pagos.cantidad[info.nivelCantidadReal] : 0,
+                subtotal: result.subtotal
             });
+        }
+        
+        function updateCalculations() {
+            const values = {
+                nivelAnterior: parseInt(document.getElementById('nivelAnterior').value, 10),
+                montoInterno: getNumericValue('montoInterno'),
+                montoExterno: getNumericValue('montoExterno'),
+                montoRecuperado: getNumericValue('montoRecuperado'),
+                cantidad: getNumericValue('cantidadDesembolsos'),
+                menorSemana: getNumericValue('menorSemana'),
+                conversion: parseFloat(document.getElementById('conversion').value) || 0,
+                empatia: parseFloat(document.getElementById('empatia').value) || 0,
+                proceso: parseFloat(document.getElementById('proceso').value) || 0,
+                nivelEquipo: parseInt(document.getElementById('nivelEquipo').value, 10)
+            };
+        
+            const info = updateFields(values);
+            const result = computeBonuses(values, info);
+            renderTotals(values, info, result);
         }
         
         // Limpiar todo
