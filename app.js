@@ -17,8 +17,7 @@
             montoExterno: [800000, 1000000, 1500000, 2000000, 2500000, 3300000],
             montoRecuperado: [300000, 400000, 500000, 600000, 800000, 1000000],
             cantidad: [0, 400000, 600000, 700000, 1000000, 1200000],
-            equipo: [0, 0, 0, 500000, 800000, 1000000],
-            penalizacionMora: [10000, 20000, 30000, 40000, 50000, 60000]
+            equipo: [0, 0, 0, 500000, 800000, 1000000]
         };
         
         // Máximo posible para la barra de subtotal (con recuperados)
@@ -48,6 +47,13 @@
                 {min: 85, mult: 0.8, text: '85%'},
                 {min: 70, mult: 0.3, text: '70%'},
                 {min: 0, mult: 0, text: '<70%'}
+            ],
+            mora: [
+                {min: 0, mult: 1.05, text: '0-2%'},
+                {min: 3, mult: 0.95, text: '3-7%'},
+                {min: 8, mult: 0.9, text: '8-9%'},
+                {min: 10, mult: 0.85, text: '10-14%'},
+                {min: 15, mult: 0.7, text: '15%+'}
             ]
         };
         
@@ -119,16 +125,6 @@
                 }
             }
 
-            if (input.id === 'clientesMora') {
-                const valNum = parseInt(input.value, 10) || 0;
-                if (valNum > 0) {
-                    input.classList.add('filled');
-                    input.classList.remove('invalid');
-                } else {
-                    input.classList.remove('filled');
-                    input.classList.add('invalid');
-                }
-            }
             
             isCalculating = false;
             updateCalculations();
@@ -288,6 +284,7 @@
             const conversion = parseFloat(document.getElementById('conversion').value) || 0;
             const empatia = parseFloat(document.getElementById('empatia').value) || 0;
             const proceso = parseFloat(document.getElementById('proceso').value) || 0;
+            const mora = parseFloat(document.getElementById('mora').value) || 0;
             
             const container = document.getElementById('multiplicadorTables');
             let html = '';
@@ -357,14 +354,36 @@
             }
             html += `<div class="multiplier-current">Tu valor: ${proceso || '-'}%</div>
             </div>`;
+
+            // Tabla Mora
+            const multMora = calcularMultiplicador('mora', mora);
+            let classMora = 'multiplier-table';
+            if (mora <= 7) classMora += ' good';
+            else if (mora < 10) classMora += ' warning';
+            else classMora += ' danger';
+
+            html += `<div class="${classMora}">
+                <div class="multiplier-title">Mora</div>`;
+
+            for (let item of multiplicadores.mora) {
+                const active = mora >= item.min && (mora < multiplicadores.mora[multiplicadores.mora.indexOf(item) + 1]?.min || item.min === 15);
+                html += `<div class="multiplier-row ${active ? 'active' : ''}" 
+                         onclick="cargarMultiplicador('mora', ${item.min})"
+                         title="Click para cargar ${item.min}%">
+                    <span>${item.text}</span>
+                    <span>→ ${Math.round(item.mult * 100)}%</span>
+                </div>`;
+            }
+            html += `<div class="multiplier-current">Tu valor: ${mora || '-'}%</div>
+            </div>`;
             
             container.innerHTML = html;
             
             // Actualizar cálculo
-            const totalMult = multConv * multEmp * multProc;
-            document.getElementById('multiplicadorCalc').textContent = 
-                conversion && empatia && proceso ? 
-                `Cálculo: ${multConv.toFixed(2)} × ${multEmp.toFixed(2)} × ${multProc.toFixed(2)} = ${(totalMult*100).toFixed(1)}%` :
+            const totalMult = multConv * multEmp * multProc * multMora;
+            document.getElementById('multiplicadorCalc').textContent =
+                conversion && empatia && proceso && mora ?
+                `Cálculo: ${multConv.toFixed(2)} × ${multEmp.toFixed(2)} × ${multProc.toFixed(2)} × ${multMora.toFixed(2)} = ${(totalMult*100).toFixed(1)}%` :
                 'Completa todos los campos de calidad';
             
             return totalMult;
@@ -638,49 +657,6 @@
             }
         }
         
-        // Función para mostrar/ocultar tabla de mora
-        function toggleTablaMora(event) {
-            const tabla = document.getElementById('tablaMora');
-            const texto = event.target;
-            if (tabla.style.display === 'none' || !tabla.style.display) {
-                tabla.style.display = 'block';
-                texto.textContent = '▲ Ocultar tabla de penalizaciones';
-            } else {
-                tabla.style.display = 'none';
-                texto.textContent = '▼ Ver tabla de penalizaciones';
-            }
-        }
-        
-        // Actualizar tabla de mora con nivel actual
-        function actualizarTablaMora(nivelActual, clientesMora) {
-            // Resetear estilos de todas las filas
-            const rows = document.querySelectorAll('#tablaMora tr');
-            rows.forEach((row, index) => {
-                if (index > 0) { // Skip header
-                    row.style.background = 'transparent';
-                    row.style.fontWeight = 'normal';
-                }
-            });
-            
-            // Marcar el nivel actual
-            const nivelRow = document.querySelectorAll('#tablaMora tr')[nivelActual + 2]; // +2 por header y índice
-            if (nivelRow) {
-                nivelRow.style.background = '#E3F2FD';
-                nivelRow.style.fontWeight = '600';
-                
-                // Agregar indicador
-                const firstCell = nivelRow.cells[0];
-                if (!firstCell.textContent.includes('→')) {
-                    firstCell.innerHTML = '→ ' + firstCell.innerHTML;
-                }
-            }
-            
-            // Actualizar cálculo
-            const penalizacion = pagos.penalizacionMora[nivelActual];
-            const total = clientesMora * penalizacion;
-            document.getElementById('calculoMora').textContent = 
-                `Tu penalización: ${clientesMora} × ${formatNumber(penalizacion)} = -${formatNumber(total)} Gs`;
-        }
         
         // Cálculo principal
         function updateCalculations() {
@@ -693,7 +669,6 @@
             const conversion = parseFloat(document.getElementById('conversion').value) || 0;
             const empatia = parseFloat(document.getElementById('empatia').value) || 0;
             const proceso = parseFloat(document.getElementById('proceso').value) || 0;
-            const clientesMora = getNumericValue('clientesMora');
             const nivelEquipo = parseInt(document.getElementById('nivelEquipo').value, 10);
 
             const menorSemanaInput = document.getElementById('menorSemana');
@@ -706,14 +681,6 @@
                 menorSemanaInput.classList.add('empty');
             }
 
-            const moraInput = document.getElementById('clientesMora');
-            if (clientesMora > 0) {
-                moraInput.classList.add('filled');
-                moraInput.classList.remove('invalid');
-            } else {
-                moraInput.classList.remove('filled');
-                moraInput.classList.add('invalid');
-            }
             
             // Actualizar barras
             const nivelInterno = updateProgressBar('interno', montoInterno, 'barraInterno', 'infoInterno');
@@ -734,9 +701,6 @@
             // El nivel real es el menor entre el actual y el anterior
             const nivelActual = Math.min(nivelActualMes, nivelAnterior);
             document.getElementById('statNivel').textContent = niveles[nivelActual];
-            
-            // Actualizar tabla de mora con nivel actual
-            actualizarTablaMora(nivelActual, clientesMora);
             
             // Actualizar multiplicadores
             const multiplicadorTotal = updateMultiplicadorTables();
@@ -779,9 +743,7 @@
                 bonusEquipo = pagos.equipo[nivelEquipo];
             }
             
-            const penalizacionMora = clientesMora * pagos.penalizacionMora[nivelActual];
-            
-            const subtotal = base + bonusCarrera + bonusInterno + bonusExterno + bonusRecuperado + bonusCantidad + bonusEquipo - penalizacionMora;
+            const subtotal = base + bonusCarrera + bonusInterno + bonusExterno + bonusRecuperado + bonusCantidad + bonusEquipo;
             
             // SIEMPRE actualizar barra de subtotal con lo que haya
             updateSubtotalBar(subtotal);
@@ -798,7 +760,6 @@
                 document.getElementById('calcRecuperado').textContent = formatNumber(bonusRecuperado) + ' Gs';
                 document.getElementById('calcCantidad').textContent = formatNumber(bonusCantidad) + ' Gs';
                 document.getElementById('calcEquipo').textContent = formatNumber(bonusEquipo) + ' Gs';
-                document.getElementById('calcMora').textContent = '-' + formatNumber(penalizacionMora) + ' Gs';
                 document.getElementById('calcSubtotal').textContent = formatNumber(subtotal) + ' Gs';
                 document.getElementById('calcMultiplicador').textContent = '0% (faltan campos)';
                 document.getElementById('totalComision').textContent = formatNumber(subtotal) + ' Gs';
@@ -845,7 +806,6 @@
             document.getElementById('calcRecuperado').textContent = formatNumber(bonusRecuperado) + ' Gs';
             document.getElementById('calcCantidad').textContent = formatNumber(bonusCantidad) + ' Gs';
             document.getElementById('calcEquipo').textContent = formatNumber(bonusEquipo) + ' Gs';
-            document.getElementById('calcMora').textContent = '-' + formatNumber(penalizacionMora) + ' Gs';
             document.getElementById('calcSubtotal').textContent = formatNumber(subtotal) + ' Gs';
             document.getElementById('calcMultiplicador').textContent = (multiplicadorTotal * 100).toFixed(1) + '%';
             document.getElementById('totalComision').textContent = formatNumber(total) + ' Gs';
@@ -896,10 +856,6 @@
                         input.classList.remove('filled');
                         input.classList.add('empty');
                     }
-                    if (input.id === 'clientesMora') {
-                        input.classList.remove('filled');
-                        input.classList.add('invalid');
-                    }
                 });
                 // Limpiar el borrador almacenado
                 localStorage.removeItem('draftCommission');
@@ -920,6 +876,11 @@
                 proc.value = '95';
                 proc.classList.add('filled');
                 proc.classList.remove('empty');
+
+                const mora = document.getElementById('mora');
+                mora.value = '2';
+                mora.classList.add('filled');
+                mora.classList.remove('empty');
 
                 const menorSemana = document.getElementById('menorSemana');
                 menorSemana.value = '2';
@@ -1033,9 +994,9 @@
                             <span>Equipo:</span>
                             <span>${document.getElementById('calcEquipo').textContent}</span>
                         </div>
-                        <div class="row" style="color: #F44336;">
-                            <span>Penalización:</span>
-                            <span>${document.getElementById('calcMora').textContent}</span>
+                        <div class="row">
+                            <span>Mora:</span>
+                            <span>${document.getElementById('mora').value || '0'}%</span>
                         </div>
                     </div>
                     
@@ -1067,12 +1028,6 @@
                     field.classList.add('empty');
                 }
             });
-
-
-            const moraInput = document.getElementById('clientesMora');
-            if (moraInput && !moraInput.value) {
-                moraInput.classList.add('invalid');
-            }
 
             updateCalculations();
         };
