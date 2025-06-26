@@ -897,6 +897,8 @@
                         input.classList.add('invalid');
                     }
                 });
+                // Limpiar el borrador almacenado
+                localStorage.removeItem('draftCommission');
                 document.getElementById('nivelAnterior').value = '2';
                 document.getElementById('nivelEquipo').value = '2';
 
@@ -914,9 +916,6 @@
                 proc.value = '95';
                 proc.classList.add('filled');
                 proc.classList.remove('empty');
-
-                // Limpiar el localStorage también
-                localStorage.removeItem('draftCommission');
 
                 updateCalculations();
             }
