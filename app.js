@@ -1,4 +1,3 @@
-// Merge conflict resolved between branches 'main' and 'update-default-options'
 
         // Datos del sistema V2 con Recuperados
         const niveles = ['Capilla', 'Junior', 'Senior A', 'Senior B', 'Máster', 'Genio'];
