@@ -69,7 +69,7 @@
         // Aplicar formato
         function applyFormat(input) {
             if (input.value && (input.id === 'montoInterno' || input.id === 'montoExterno' || input.id === 'montoRecuperado')) {
-                const num = parseInt(input.value.replace(/\./g, '')) || 0;
+                const num = parseInt(input.value.replace(/\./g, ''), 10) || 0;
                 input.value = formatNumber(num);
             }
         }
@@ -86,7 +86,7 @@
                 const oldLength = input.value.length;
                 
                 if (value) {
-                    input.value = formatNumber(parseInt(value));
+                    input.value = formatNumber(parseInt(value, 10));
                 } else {
                     input.value = '';
                 }
@@ -121,7 +121,7 @@
             }
 
             if (input.id === 'clientesMora') {
-                const valNum = parseInt(input.value) || 0;
+                const valNum = parseInt(input.value, 10) || 0;
                 if (valNum > 0) {
                     input.classList.add('filled');
                     input.classList.remove('invalid');
@@ -148,7 +148,7 @@
         function getNumericValue(id) {
             const input = document.getElementById(id);
             if (!input.value) return 0;
-            return parseInt(input.value.replace(/\./g, '')) || 0;
+            return parseInt(input.value.replace(/\./g, ''), 10) || 0;
         }
         
         // Calcular multiplicador
@@ -681,7 +681,7 @@
         
         // Cálculo principal
         function updateCalculations() {
-            const nivelAnterior = parseInt(document.getElementById('nivelAnterior').value);
+            const nivelAnterior = parseInt(document.getElementById('nivelAnterior').value, 10);
             const montoInterno = getNumericValue('montoInterno');
             const montoExterno = getNumericValue('montoExterno');
             const montoRecuperado = getNumericValue('montoRecuperado');
@@ -691,7 +691,7 @@
             const empatia = parseFloat(document.getElementById('empatia').value) || 0;
             const proceso = parseFloat(document.getElementById('proceso').value) || 0;
             const clientesMora = getNumericValue('clientesMora');
-            const nivelEquipo = parseInt(document.getElementById('nivelEquipo').value);
+            const nivelEquipo = parseInt(document.getElementById('nivelEquipo').value, 10);
 
             const menorSemanaInput = document.getElementById('menorSemana');
             if (menorSemanaInput.value) {
