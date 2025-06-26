@@ -1057,8 +1057,15 @@
             });
 
             const menorSemanaInput = document.getElementById('menorSemana');
-            if (menorSemanaInput && menorSemanaInput.value) {
-                menorSemanaInput.classList.add('filled');
+            if (menorSemanaInput) {
+                const valor = parseInt(menorSemanaInput.value, 10);
+                if (!isNaN(valor) && valor >= 2) {
+                    menorSemanaInput.classList.add('filled');
+                    menorSemanaInput.classList.remove('empty');
+                } else {
+                    menorSemanaInput.classList.remove('filled');
+                    menorSemanaInput.classList.add('empty');
+                }
             }
 
             const moraInput = document.getElementById('clientesMora');
