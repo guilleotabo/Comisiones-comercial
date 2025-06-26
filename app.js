@@ -110,7 +110,8 @@
             }
 
             if (input.id === 'menorSemana') {
-                if (input.value) {
+                const valor = parseInt(input.value, 10) || 0;
+                if (valor >= 2) {
                     input.classList.add('filled');
                     input.classList.remove('empty');
                 } else {
