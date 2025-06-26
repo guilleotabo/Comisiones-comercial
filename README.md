@@ -10,6 +10,9 @@ y otros datos relevantes para calcular los pagos según el nivel de cada asesor.
 - Sección de llave semanal y requisitos de calidad.
 - Generación de PDF y opción para limpiar los campos.
 
+## Requisitos
+Se recomienda utilizar **Node.js 18** para desarrollar y ejecutar los scripts de apoyo.
+
 ## Uso
 Abre `index.html` en tu navegador para utilizar la herramienta.
 
