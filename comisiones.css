@@ -140,10 +140,6 @@
             background: #FFF8E1;
         }
 
-        .input-field.invalid {
-            border-color: #F44336;
-            background: #FFEBEE;
-        }
 
         .input-field.required.empty {
             border-color: #F44336 !important;
@@ -491,14 +487,14 @@
         /* Multiplicadores con tabla completa */
         .multiplier-tables {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 4px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3px;
         }
         
         .multiplier-table {
             background: #f8f9fa;
             border-radius: 4px;
-            padding: 6px;
+            padding: 4px;
             border: 2px solid transparent;
         }
         
@@ -518,7 +514,7 @@
         }
         
         .multiplier-title {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             text-align: center;
             margin-bottom: 2px;
@@ -528,8 +524,8 @@
         .multiplier-row {
             display: flex;
             justify-content: space-between;
-            padding: 5px 6px;
-            font-size: 13px;
+            padding: 4px 5px;
+            font-size: 12px;
             cursor: pointer;
             border-radius: 2px;
             transition: all 0.2s;
@@ -607,42 +603,6 @@
         }
         
         /* Tabla de mora */
-        .mora-table-wrapper {
-            display: none;
-            margin-top: 8px;
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 4px;
-        }
-        
-        .mora-table {
-            width: 100%;
-            font-size: 11px;
-            border-collapse: collapse;
-        }
-        
-        .mora-table th,
-        .mora-table td {
-            padding: 4px;
-            text-align: left;
-        }
-        
-        .mora-table th:last-child,
-        .mora-table td:last-child {
-            text-align: right;
-        }
-        
-        .mora-table tr:first-child {
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .mora-calc {
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid #ddd;
-            font-weight: 600;
-            color: #F44336;
-        }
         
         /* Utilidades */
         .text-muted {

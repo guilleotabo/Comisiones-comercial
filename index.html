@@ -122,36 +122,16 @@
                            placeholder="Ej: 85" maxlength="3" value="95"
                            onkeyup="formatAndCalculate(this)">
                 </div>
+
+                <div class="input-group">
+                    <label>Mora % <span class="req">*</span></label>
+                    <input type="text" class="input-field required" id="mora"
+                           placeholder="Ej: 2" maxlength="3" value="2"
+                           onkeyup="formatAndCalculate(this)">
+                </div>
                 
                 <!-- Otros -->
                 <div class="section-divider">═══ OTROS ═══</div>
-                
-                <div class="input-group">
-                    <label>Clientes en mora</label>
-                    <input type="text" class="input-field" id="clientesMora" 
-                           placeholder="Ej: 2"
-                           onkeyup="formatAndCalculate(this)">
-                    <div class="help-text" style="cursor: pointer; color: #006D77;" onclick="toggleTablaMora(event)">
-                        ▼ Ver tabla de penalizaciones
-                    </div>
-                    <div id="tablaMora" class="mora-table-wrapper">
-                        <table class="mora-table">
-                            <tr>
-                                <th>Nivel</th>
-                                <th>Por cliente</th>
-                            </tr>
-                            <tr><td>🏠 Capilla</td><td>-10.000 Gs</td></tr>
-                            <tr><td>👤 Junior</td><td>-20.000 Gs</td></tr>
-                            <tr><td>⭐ Senior A</td><td>-30.000 Gs</td></tr>
-                            <tr><td>💎 Senior B</td><td>-40.000 Gs</td></tr>
-                            <tr><td>👑 Máster</td><td>-50.000 Gs</td></tr>
-                            <tr><td>🏆 Genio</td><td>-60.000 Gs</td></tr>
-                        </table>
-                        <div id="calculoMora" class="mora-calc">
-                            Tu penalización: 0 × 0 = 0 Gs
-                        </div>
-                    </div>
-                </div>
                 
                 <div class="input-group">
                     <label>Menor nivel del equipo</label>
@@ -300,11 +280,6 @@
                                 <span>Equipo:</span>
                                 <span id="calcEquipo">0 Gs</span>
                             </div>
-                            <div class="calc-row negative">
-                                <span>Mora:</span>
-                                <span id="calcMora">0 Gs</span>
-                            </div>
-                            
                             <div class="calc-divider"></div>
                             
                             <div class="calc-row">
