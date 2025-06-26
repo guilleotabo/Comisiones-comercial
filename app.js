@@ -694,7 +694,8 @@
             const nivelEquipo = parseInt(document.getElementById('nivelEquipo').value, 10);
 
             const menorSemanaInput = document.getElementById('menorSemana');
-            if (menorSemanaInput.value) {
+            const menorSemanaVal = parseInt(menorSemanaInput.value, 10) || 0;
+            if (menorSemanaVal >= 2) {
                 menorSemanaInput.classList.add('filled');
                 menorSemanaInput.classList.remove('empty');
             } else {
