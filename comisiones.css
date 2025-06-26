@@ -654,17 +654,6 @@
                 grid-template-columns: 1fr;
             }
         }
-    
-
-/* --- Added by AI 2025-06-26 --- */
-/* Fixed summary card that stays visible */
-#totalComision {
-    position: fixed;
-    bottom: 12px;
-    right: 12px;
-    z-index: 1000;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
 
 /* Mobile responsive layout */
 @media (max-width: 768px) {
