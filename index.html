@@ -16,6 +16,7 @@
                 <div class="header-buttons">
                     <button class="header-btn" onclick="limpiarTodo()">🗑️ Limpiar</button>
                     <button class="header-btn" onclick="descargarPDF()">📄 PDF</button>
+                    <button class="header-btn" id="toggleSidebarBtn" onclick="toggleSidebar()">⬅️ Ocultar</button>
                 </div>
             </div>
             
@@ -85,8 +86,8 @@
                 <div class="section-divider">═══ LLAVE SEMANAL ═══</div>
                 
                 <div class="input-group">
-                    <label>Tu menor semana del mes <span class="tooltip" data-tip="Cantidad de desembolsos en tu peor semana">ⓘ</span></label>
-                    <input type="text" class="input-field" id="menorSemana" 
+                    <label>Desembolsos semanales mínimos <span class="tooltip" data-tip="Cantidad de desembolsos en tu peor semana">ⓘ</span></label>
+                    <input type="text" class="input-field" id="menorSemana" value="2"
                            placeholder="Ej: 2"
                            onkeyup="formatAndCalculate(this)">
                     <div class="llave-info" id="llaveInfo">
@@ -175,10 +176,14 @@
                     <span class="stat-value" id="statNivel">Senior A</span>
                 </div>
                 <div class="stat">
+                    <span class="stat-label">Subtotal:</span>
+                    <span class="stat-value" id="statSubtotal">0 Gs</span>
+                </div>
+                <div class="stat">
                     <span class="stat-label">Multiplicador:</span>
                     <span class="stat-value" id="statMulti">0%</span>
                 </div>
-                <div class="stat" style="margin-left: auto;">
+                <div class="stat">
                     <span class="stat-label">Comisión:</span>
                     <span class="stat-value" style="color: #2E7D32;" id="statComision">0 Gs</span>
                 </div>
@@ -246,7 +251,7 @@
                         <div class="subtotal-fill" id="subtotalFill"></div>
                     </div>
                     <div class="subtotal-text">
-                        Subtotal: <strong id="subtotalMonto">0 Gs</strong> de <strong>14.000.000 Gs</strong> máximo
+                        Subtotal: <strong id="subtotalMonto">0 Gs</strong> de <strong>14.000.000 Gs</strong>
                     </div>
                 </div>
                 
