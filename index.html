@@ -12,11 +12,15 @@
         <!-- Panel Izquierdo -->
         <div class="left-panel">
             <div class="header">
-                <h1>💰 Sistema de Comisiones Comerciales</h1>
-                <span id="saveIndicator"></span>
+                <div class="header-left">
+                    <h1>💰 Sistema de Comisiones Comerciales</h1>
+                    <span id="saveIndicator"></span>
+                    <span id="configStatus" class="update-status">Cargando configuración...</span>
+                </div>
                 <div class="header-buttons">
                     <button class="header-btn" onclick="limpiarTodo()">🗑️ Limpiar</button>
                     <button class="header-btn" onclick="descargarPDF()">📄 PDF</button>
+                    <button class="header-btn" id="updateConfigBtn">🔄 Actualizar datos</button>
                     <button class="header-btn" id="toggleSidebarBtn" onclick="toggleSidebar()">⬅️ Ocultar</button>
                 </div>
             </div>
@@ -335,6 +339,7 @@
     </div>
 
     
+<script src="config-loader.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
