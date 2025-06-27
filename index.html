@@ -50,26 +50,32 @@
                            onblur="applyFormat(this)">
                     <div class="status-text">
                         <span id="internoStatus"></span>
-                        <span id="internoLlave" class="llave"></span>
+                        <span id="montoLlave" class="llave"></span>
                     </div>
                 </div>
                 
                 <div class="input-group">
                     <label>Monto Externo/Referenciado</label>
-                    <input type="text" class="input-field" id="montoExterno" 
+                    <input type="text" class="input-field" id="montoExterno"
                            placeholder="Ej: 80.000.000"
                            onkeyup="formatAndCalculate(this)"
                            onfocus="removeFormat(this)"
                            onblur="applyFormat(this)">
+                    <div class="status-text">
+                        <span id="externoLlave" class="llave"></span>
+                    </div>
                 </div>
                 
                 <div class="input-group">
                     <label>Recuperados +3 meses</label>
-                    <input type="text" class="input-field" id="montoRecuperado" 
+                    <input type="text" class="input-field" id="montoRecuperado"
                            placeholder="Ej: 60.000.000"
                            onkeyup="formatAndCalculate(this)"
                            onfocus="removeFormat(this)"
                            onblur="applyFormat(this)">
+                    <div class="status-text">
+                        <span id="recuperadoLlave" class="llave"></span>
+                    </div>
                     <div class="help-text">Clientes recuperados después de 3 meses</div>
                 </div>
                 
