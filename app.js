@@ -392,14 +392,23 @@
 
             for (let item of multiplicadores.mora) {
                 const active = mora >= item.min && (mora < multiplicadores.mora[multiplicadores.mora.indexOf(item) + 1]?.min || item.min === 15);
-                html += `<div class="multiplier-row ${active ? 'active' : ''}" 
+                html += `<div class="multiplier-row ${active ? 'active' : ''}"
                          onclick="cargarMultiplicador('mora', ${item.min})"
-                         title="Click para cargar ${item.min}%">
+                         title="Click para cargar ${item.text}">
                     <span>${item.text}</span>
                     <span>→ ${Math.round(item.mult * 100)}%</span>
                 </div>`;
             }
-            html += `<div class="multiplier-current">Tu valor: ${mora || '-'}%</div>
+            let moraTexto = '-';
+            for (let i = 0; i < multiplicadores.mora.length; i++) {
+                const item = multiplicadores.mora[i];
+                const next = multiplicadores.mora[i + 1];
+                if (mora >= item.min && (!next || mora < next.min)) {
+                    moraTexto = item.text;
+                    break;
+                }
+            }
+            html += `<div class="multiplier-current">Tu valor: ${mora ? moraTexto : '-'}</div>
             </div>`;
             
             container.innerHTML = html;
@@ -417,7 +426,19 @@
         // Cargar multiplicador al hacer click
         function cargarMultiplicador(tipo, valor) {
             const input = document.getElementById(tipo);
-            input.value = valor;
+            let finalValor = valor;
+            if (tipo === 'mora') {
+                const idx = multiplicadores.mora.findIndex(m => m.min === valor);
+                if (idx !== -1) {
+                    const next = multiplicadores.mora[idx + 1];
+                    if (next) {
+                        finalValor = next.min - 1; // límite superior del rango
+                    } else {
+                        finalValor = valor; // último rango 15%+
+                    }
+                }
+            }
+            input.value = finalValor;
             input.classList.add('filled');
             input.classList.remove('empty');
             updateCalculations();
