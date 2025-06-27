@@ -22,4 +22,5 @@ Si trabajas sin conexión, configura un registro npm local o incluye un
 directorio `node_modules` previamente poblado para ejecutar las pruebas.
 
 ## Licencia
-Distribuido bajo los términos de la licencia MIT (SPDX: MIT). Consulta el archivo [LICENSE](LICENSE) para más informacion.
+Distribuido bajo los términos de la licencia MIT (SPDX: MIT). Consulta el archivo [LICENSE](LICENSE) para más informacion. 
+Edito 1
