@@ -740,11 +740,23 @@
             const multiplicadorTotal = updateMultiplicadorTables();
         
             const cumpleLlaveMonto = values.cantidad >= 6;
-            document.getElementById('internoLlave').textContent =
+            document.getElementById('montoLlave').textContent =
                 cumpleLlaveMonto
                     ? 'Llave Montos (Int/Ext/Rec): \u2713 6 desem.'
-                    : 'Llave Montos (Int/Ext/Rec): \u274C Min 6 desem.';
-            document.getElementById('internoLlave').className =
+                    : 'Llave Montos (Int/Ext/Rec): \u274C 6 desem.';
+            document.getElementById('montoLlave').className =
+                cumpleLlaveMonto ? 'llave text-success' : 'llave text-danger';
+            document.getElementById('externoLlave').textContent =
+                cumpleLlaveMonto
+                    ? 'Llave Montos (Int/Ext/Rec): \u2713 6 desem.'
+                    : 'Llave Montos (Int/Ext/Rec): \u274C 6 desem.';
+            document.getElementById('externoLlave').className =
+                cumpleLlaveMonto ? 'llave text-success' : 'llave text-danger';
+            document.getElementById('recuperadoLlave').textContent =
+                cumpleLlaveMonto
+                    ? 'Llave Montos (Int/Ext/Rec): \u2713 6 desem.'
+                    : 'Llave Montos (Int/Ext/Rec): \u274C 6 desem.';
+            document.getElementById('recuperadoLlave').className =
                 cumpleLlaveMonto ? 'llave text-success' : 'llave text-danger';
         
             document.getElementById('internoStatus').textContent = nivelInterno >= 0 ? `\u2713 Nivel: ${niveles[nivelInterno]}` : '';
