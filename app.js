@@ -617,7 +617,7 @@
             
             // Actualizar info
             const equipoTexto = niveles[nivelEquipo];
-            const cumpleRequisito = nivelCarrera >= 3 && nivelEquipo >= 3;
+            const cumpleRequisito = nivelCarrera >= 2 && nivelEquipo >= 2;
             const bonusEquipo = cumpleRequisito ? pagos.equipo[nivelEquipo] : 0;
             
             info.innerHTML = `Menor nivel del equipo: <strong>${equipoTexto}</strong> | 
@@ -625,13 +625,13 @@
                              Premio: <strong>${formatNumber(bonusEquipo)} Gs</strong>`;
             
             // Actualizar mensaje de requisitos
-            if (nivelCarrera < 3) {
+            if (nivelCarrera < 2) {
                 requisitos.style.display = 'block';
-                requisitos.innerHTML = '⚠️ Necesitas estar en Senior B+ para cobrar premio equipo';
+                requisitos.innerHTML = '⚠️ Necesitas estar en Senior A+ para cobrar premio equipo';
                 requisitos.style.background = '#FFF3E0';
-            } else if (nivelEquipo < 3) {
+            } else if (nivelEquipo < 2) {
                 requisitos.style.display = 'block';
-                requisitos.innerHTML = '⚠️ El equipo necesita estar en Senior B+ para activar premio';
+                requisitos.innerHTML = '⚠️ El equipo necesita estar en Senior A+ para activar premio';
                 requisitos.style.background = '#FFF3E0';
             } else {
                 requisitos.style.display = 'block';
@@ -757,7 +757,7 @@
             const bonusCantidad = info.nivelCantidadLimitado >= 0 ? pagos.cantidad[info.nivelCantidadLimitado] : 0;
         
             let bonusEquipo = 0;
-            if (info.nivelCarrera >= 3 && values.nivelEquipo >= 3) {
+            if (info.nivelCarrera >= 2 && values.nivelEquipo >= 2) {
                 bonusEquipo = pagos.equipo[values.nivelEquipo];
             }
         
