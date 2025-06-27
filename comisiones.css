@@ -80,6 +80,18 @@
         #saveIndicator.saving {
             opacity: 1;
         }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #configStatus {
+            font-size: 11px;
+            color: #fff;
+            opacity: 0.8;
+        }
         
         .header h1 {
             font-size: 15px;
