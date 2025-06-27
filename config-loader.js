@@ -1,7 +1,7 @@
-// Carga de configuracion desde Google Sheets con cache local
+// Carga de configuracion desde archivo Excel con cache local
 (function(window){
     const CONFIG_KEY = 'commissionConfig';
-    const BASE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vScu3Ajex4xDRxnXzml6ef1lKaDtsnEivVYv4nFTiNQa9PoO5LUh9PNg7H51Mq6EvxOy0UBhxJgaAdW/pub?output=csv';
+    const EXCEL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQBv5EfmT0KwkL86WbaGknqiq2mQJIu6qjjfVlXeKFCoSOzFgTviuOJaqkuYsxJsA/pub?output=xlsx';
     const SHEETS = ['Config','Niveles','Metas','Pagos','Multi_Conversion','Multi_Empatia','Multi_Proceso','Multi_Mora'];
 
     const DEFAULT_CONFIG = {
@@ -63,33 +63,36 @@
     }
 
     function parseNumber(v){
-        if(v === undefined) return '';
+        if(v === undefined || v === null) return '';
         const n = parseFloat(v.toString().replace(/[^0-9.-]/g,''));
         return isNaN(n) ? v : n;
     }
 
-    function parseCSV(text){
-        const lines = text.trim().split(/\r?\n/);
-        const headers = lines[0].split(',').map(h=>h.trim());
-        return lines.slice(1).map(line => {
-            const cols = line.split(',');
+    function sheetToJson(wb, name){
+        const ws = wb.Sheets[name];
+        if(!ws){
+            console.warn('Sheet missing:', name);
+            return [];
+        }
+        const rows = XLSX.utils.sheet_to_json(ws, {defval:'', raw:false});
+        return rows.map(r => {
             const obj = {};
-            headers.forEach((h,i)=>{ obj[h] = parseNumber((cols[i]||'').trim()); });
+            Object.keys(r).forEach(k => { obj[k.trim()] = parseNumber(r[k]); });
             return obj;
         });
     }
 
-    async function fetchSheet(name){
-        const res = await fetch(BASE_URL + '&sheet=' + encodeURIComponent(name));
-        if(!res.ok) throw new Error(name+': '+res.status);
-        return parseCSV(await res.text());
+    async function fetchWorkbook(){
+        const res = await fetch(EXCEL_URL);
+        if(!res.ok) throw new Error('Excel download: '+res.status);
+        const data = await res.arrayBuffer();
+        return XLSX.read(data, {type:'array'});
     }
 
     async function fetchAll(){
+        const wb = await fetchWorkbook();
         const data = {};
-        for(const s of SHEETS){
-            data[s] = await fetchSheet(s);
-        }
+        SHEETS.forEach(name => { data[name] = sheetToJson(wb, name); });
         return data;
     }
 
@@ -166,3 +169,4 @@
     window.loadConfiguration = loadConfiguration;
     window.defaultConfig = DEFAULT_CONFIG;
 })(window);
+
