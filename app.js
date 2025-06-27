@@ -586,9 +586,11 @@
                 alertas.push(`Sin 2/sem no cobrás premio cantidad (perdés ${formatNumber(datos.bonusCantidadPotencial)} Gs)`);
             }
             
-            // Llave monto interno
+            // Llave montos
             if (!datos.cumpleLlaveMonto && datos.nivelInterno >= 0) {
-                alertas.push(`Te faltan ${6 - datos.cantidad} desembolsos para activar premio interno (${formatNumber(pagos.montoInterno[datos.nivelInterno])} Gs)`);
+                alertas.push(
+                    `Te faltan ${6 - datos.cantidad} desembolsos para activar premios de montos (int/ext/rec)`
+                );
             }
 
             if (datos.mora > 10) {
@@ -738,8 +740,12 @@
             const multiplicadorTotal = updateMultiplicadorTables();
         
             const cumpleLlaveMonto = values.cantidad >= 6;
-            document.getElementById('internoLlave').textContent = cumpleLlaveMonto ? 'Llave: \u2713 6 desem.' : 'Llave: \u274C Min 6 desem.';
-            document.getElementById('internoLlave').className = cumpleLlaveMonto ? 'llave text-success' : 'llave text-danger';
+            document.getElementById('internoLlave').textContent =
+                cumpleLlaveMonto
+                    ? 'Llave Montos (Int/Ext/Rec): \u2713 6 desem.'
+                    : 'Llave Montos (Int/Ext/Rec): \u274C Min 6 desem.';
+            document.getElementById('internoLlave').className =
+                cumpleLlaveMonto ? 'llave text-success' : 'llave text-danger';
         
             document.getElementById('internoStatus').textContent = nivelInterno >= 0 ? `\u2713 Nivel: ${niveles[nivelInterno]}` : '';
             document.getElementById('cantidadStatus').textContent = values.cantidad >= metas.cantidad[nivelActual] ? `\u2713 ${values.cantidad} > meta ${metas.cantidad[nivelActual]}` : `${values.cantidad}/${metas.cantidad[nivelActual]}`;
@@ -773,8 +779,8 @@
         function computeBonuses(values, info) {
             const base = pagos.base;
             const bonusInterno = (info.nivelInterno >= 0 && info.cumpleLlaveMonto) ? pagos.montoInterno[info.nivelInterno] : 0;
-            const bonusExterno = info.nivelExterno >= 0 ? pagos.montoExterno[info.nivelExterno] : 0;
-            const bonusRecuperado = info.nivelRecuperado >= 0 ? pagos.montoRecuperado[info.nivelRecuperado] : 0;
+            const bonusExterno = (info.nivelExterno >= 0 && info.cumpleLlaveMonto) ? pagos.montoExterno[info.nivelExterno] : 0;
+            const bonusRecuperado = (info.nivelRecuperado >= 0 && info.cumpleLlaveMonto) ? pagos.montoRecuperado[info.nivelRecuperado] : 0;
             const bonusCantidad = info.nivelCantidadLimitado >= 0 ? pagos.cantidad[info.nivelCantidadLimitado] : 0;
         
             let bonusEquipo = 0;
