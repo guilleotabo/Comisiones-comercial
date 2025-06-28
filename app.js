@@ -932,8 +932,10 @@
             }
         }
         
-       // Descargar PDF
+     // Descargar PDF
 function descargarPDF() {
+    generarPDFMejorado();
+}
 
             // Guardar valores actuales
             const comisionTotal = getValue('totalComision', 'textContent');
