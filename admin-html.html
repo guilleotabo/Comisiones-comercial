@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración - Sistema de Comisiones</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f6f8;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #006D77;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        h2 {
+            color: #006D77;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 2px solid #006D77;
+            padding-bottom: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        
+        th {
+            background: #006D77;
+            color: white;
+            font-weight: 600;
+        }
+        
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #006D77;
+        }
+        
+        .button-group {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: #006D77;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #005a63;
+        }
+        
+        .preview {
+            background: #4CAF50;
+        }
+        
+        .preview:hover {
+            background: #45a049;
+        }
+        
+        .save-local {
+            background: #2196F3;
+        }
+        
+        .save-local:hover {
+            background: #1976D2;
+        }
+        
+        .output-section {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 300px;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .info {
+            background: #E3F2FD;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .success {
+            background: #E8F5E9;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+            display: none;
+        }
+        
+        .split-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .split-table {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚙️ Administración del Sistema de Comisiones</h1>
+        
+        <div class="info">
+            📌 <strong>Instrucciones:</strong> Modifica los valores según necesites. Los cambios no se aplican hasta que guardes o generes el nuevo config.js
+        </div>
+        
+        <h2>💰 Configuración Base</h2>
+        <table>
+            <tr>
+                <th>Concepto</th>
+                <th>Valor Actual (Gs)</th>
+            </tr>
+            <tr>
+                <td>Base Fija</td>
+                <td><input type="text" id="base" value="3000000" onkeyup="formatearInput(this)"></td>
+            </tr>
+        </table>
+        
+        <h2>🎯 Metas por Nivel</h2>
+        <div class="split-table">
+            <div>
+                <table>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Monto Interno (Gs)</th>
+                    </tr>
+                    <tr><td>Capilla</td><td><input type="text" id="meta-interno-0" value="600000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Junior</td><td><input type="text" id="meta-interno-1" value="800000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior A</td><td><input type="text" id="meta-interno-2" value="900000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior B</td><td><input type="text" id="meta-interno-3" value="1000000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Máster</td><td><input type="text" id="meta-interno-4" value="1100000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Genio</td><td><input type="text" id="meta-interno-5" value="1200000000" onkeyup="formatearInput(this)"></td></tr>
+                </table>
+                
+                <table>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Monto Externo (Gs)</th>
+                    </tr>
+                    <tr><td>Capilla</td><td><input type="text" id="meta-externo-0" value="50000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Junior</td><td><input type="text" id="meta-externo-1" value="100000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior A</td><td><input type="text" id="meta-externo-2" value="150000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior B</td><td><input type="text" id="meta-externo-3" value="200000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Máster</td><td><input type="text" id="meta-externo-4" value="300000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Genio</td><td><input type="text" id="meta-externo-5" value="400000000" onkeyup="formatearInput(this)"></td></tr>
+                </table>
+            </div>
+            
+            <div>
+                <table>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Recuperados (Gs)</th>
+                    </tr>
+                    <tr><td>Capilla</td><td><input type="text" id="meta-recuperado-0" value="40000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Junior</td><td><input type="text" id="meta-recuperado-1" value="60000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior A</td><td><input type="text" id="meta-recuperado-2" value="80000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior B</td><td><input type="text" id="meta-recuperado-3" value="100000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Máster</td><td><input type="text" id="meta-recuperado-4" value="120000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Genio</td><td><input type="text" id="meta-recuperado-5" value="150000000" onkeyup="formatearInput(this)"></td></tr>
+                </table>
+                
+                <table>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Cantidad Desembolsos</th>
+                    </tr>
+                    <tr><td>Capilla</td><td><input type="number" id="meta-cantidad-0" value="6"></td></tr>
+                    <tr><td>Junior</td><td><input type="number" id="meta-cantidad-1" value="8"></td></tr>
+                    <tr><td>Senior A</td><td><input type="number" id="meta-cantidad-2" value="9"></td></tr>
+                    <tr><td>Senior B</td><td><input type="number" id="meta-cantidad-3" value="10"></td></tr>
+                    <tr><td>Máster</td><td><input type="number" id="meta-cantidad-4" value="12"></td></tr>
+                    <tr><td>Genio</td><td><input type="number" id="meta-cantidad-5" value="13"></td></tr>
+                </table>
+            </div>
+        </div>
+        
+        <h2>🏆 Premios por Nivel</h2>
+        <div class="split-table">
+            <div>
+                <table>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Premio Carrera (Gs)</th>
+                    </tr>
+                    <tr><td>Capilla</td><td><input type="text" id="premio-carrera-0" value="0" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Junior</td><td><input type="text" id="premio-carrera-1" value="0" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior A</td><td><input type="text" id="premio-carrera-2" value="500000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior B</td><td><input type="text" id="premio-carrera-3" value="1000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Máster</td><td><input type="text" id="premio-carrera-4" value="1500000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Genio</td><td><input type="text" id="premio-carrera-5" value="2000000" onkeyup="formatearInput(this)"></td></tr>
+                </table>
+                
+                <table>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Premio Interno (Gs)</th>
+                    </tr>
+                    <tr><td>Capilla</td><td><input type="text" id="premio-interno-0" value="500000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Junior</td><td><input type="text" id="premio-interno-1" value="600000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior A</td><td><input type="text" id="premio-interno-2" value="1000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior B</td><td><input type="text" id="premio-interno-3" value="1400000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Máster</td><td><input type="text" id="premio-interno-4" value="2000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Genio</td><td><input type="text" id="premio-interno-5" value="2500000" onkeyup="formatearInput(this)"></td></tr>
+                </table>
+                
+                <table>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Premio Externo (Gs)</th>
+                    </tr>
+                    <tr><td>Capilla</td><td><input type="text" id="premio-externo-0" value="800000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Junior</td><td><input type="text" id="premio-externo-1" value="1000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior A</td><td><input type="text" id="premio-externo-2" value="1500000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior B</td><td><input type="text" id="premio-externo-3" value="2000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Máster</td><td><input type="text" id="premio-externo-4" value="2500000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Genio</td><td><input type="text" id="premio-externo-5" value="3300000" onkeyup="formatearInput(this)"></td></tr>
+                </table>
+            </div>
+            
+            <div>
+                <table>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Premio Recuperados (Gs)</th>
+                    </tr>
+                    <tr><td>Capilla</td><td><input type="text" id="premio-recuperado-0" value="300000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Junior</td><td><input type="text" id="premio-recuperado-1" value="400000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior A</td><td><input type="text" id="premio-recuperado-2" value="500000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior B</td><td><input type="text" id="premio-recuperado-3" value="600000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Máster</td><td><input type="text" id="premio-recuperado-4" value="800000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Genio</td><td><input type="text" id="premio-recuperado-5" value="1000000" onkeyup="formatearInput(this)"></td></tr>
+                </table>
+                
+                <table>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Premio Cantidad (Gs)</th>
+                    </tr>
+                    <tr><td>Capilla</td><td><input type="text" id="premio-cantidad-0" value="0" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Junior</td><td><input type="text" id="premio-cantidad-1" value="400000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior A</td><td><input type="text" id="premio-cantidad-2" value="600000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior B</td><td><input type="text" id="premio-cantidad-3" value="700000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Máster</td><td><input type="text" id="premio-cantidad-4" value="1000000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Genio</td><td><input type="text" id="premio-cantidad-5" value="1200000" onkeyup="formatearInput(this)"></td></tr>
+                </table>
+                
+                <table>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Premio Equipo (Gs)</th>
+                    </tr>
+                    <tr><td>Capilla</td><td><input type="text" id="premio-equipo-0" value="0" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Junior</td><td><input type="text" id="premio-equipo-1" value="0" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior A</td><td><input type="text" id="premio-equipo-2" value="0" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Senior B</td><td><input type="text" id="premio-equipo-3" value="500000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Máster</td><td><input type="text" id="premio-equipo-4" value="800000" onkeyup="formatearInput(this)"></td></tr>
+                    <tr><td>Genio</td><td><input type="text" id="premio-equipo-5" value="1000000" onkeyup="formatearInput(this)"></td></tr>
+                </table>
+            </div>
+        </div>
+        
+        <h2>📊 Multiplicadores</h2>
+        <div class="split-table">
+            <div>
+                <table>
+                    <tr>
+                        <th colspan="3">Conversión</th>
+                    </tr>
+                    <tr>
+                        <th>Desde %</th>
+                        <th>Multiplicador</th>
+                        <th>Texto</th>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-conv-min-0" value="10"></td>
+                        <td><input type="number" id="mult-conv-val-0" value="1.1" step="0.01"></td>
+                        <td><input type="text" id="mult-conv-text-0" value="10%+"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-conv-min-1" value="8"></td>
+                        <td><input type="number" id="mult-conv-val-1" value="1.0" step="0.01"></td>
+                        <td><input type="text" id="mult-conv-text-1" value="8%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-conv-min-2" value="7"></td>
+                        <td><input type="number" id="mult-conv-val-2" value="0.8" step="0.01"></td>
+                        <td><input type="text" id="mult-conv-text-2" value="7%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-conv-min-3" value="6"></td>
+                        <td><input type="number" id="mult-conv-val-3" value="0.7" step="0.01"></td>
+                        <td><input type="text" id="mult-conv-text-3" value="6%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-conv-min-4" value="5"></td>
+                        <td><input type="number" id="mult-conv-val-4" value="0.6" step="0.01"></td>
+                        <td><input type="text" id="mult-conv-text-4" value="5%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-conv-min-5" value="4"></td>
+                        <td><input type="number" id="mult-conv-val-5" value="0.5" step="0.01"></td>
+                        <td><input type="text" id="mult-conv-text-5" value="4%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-conv-min-6" value="0"></td>
+                        <td><input type="number" id="mult-conv-val-6" value="0.3" step="0.01"></td>
+                        <td><input type="text" id="mult-conv-text-6" value="<4%"></td>
+                    </tr>
+                </table>
+                
+                <table>
+                    <tr>
+                        <th colspan="3">Empatía</th>
+                    </tr>
+                    <tr>
+                        <th>Desde %</th>
+                        <th>Multiplicador</th>
+                        <th>Texto</th>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-emp-min-0" value="96"></td>
+                        <td><input type="number" id="mult-emp-val-0" value="1.0" step="0.01"></td>
+                        <td><input type="text" id="mult-emp-text-0" value="96%+"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-emp-min-1" value="90"></td>
+                        <td><input type="number" id="mult-emp-val-1" value="0.9" step="0.01"></td>
+                        <td><input type="text" id="mult-emp-text-1" value="90%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-emp-min-2" value="80"></td>
+                        <td><input type="number" id="mult-emp-val-2" value="0.5" step="0.01"></td>
+                        <td><input type="text" id="mult-emp-text-2" value="80%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-emp-min-3" value="70"></td>
+                        <td><input type="number" id="mult-emp-val-3" value="0.3" step="0.01"></td>
+                        <td><input type="text" id="mult-emp-text-3" value="70%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-emp-min-4" value="0"></td>
+                        <td><input type="number" id="mult-emp-val-4" value="0" step="0.01"></td>
+                        <td><input type="text" id="mult-emp-text-4" value="<70%"></td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div>
+                <table>
+                    <tr>
+                        <th colspan="3">Proceso</th>
+                    </tr>
+                    <tr>
+                        <th>Desde %</th>
+                        <th>Multiplicador</th>
+                        <th>Texto</th>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-proc-min-0" value="95"></td>
+                        <td><input type="number" id="mult-proc-val-0" value="1.0" step="0.01"></td>
+                        <td><input type="text" id="mult-proc-text-0" value="95%+"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-proc-min-1" value="90"></td>
+                        <td><input type="number" id="mult-proc-val-1" value="0.95" step="0.01"></td>
+                        <td><input type="text" id="mult-proc-text-1" value="90%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-proc-min-2" value="85"></td>
+                        <td><input type="number" id="mult-proc-val-2" value="0.8" step="0.01"></td>
+                        <td><input type="text" id="mult-proc-text-2" value="85%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-proc-min-3" value="70"></td>
+                        <td><input type="number" id="mult-proc-val-3" value="0.3" step="0.01"></td>
+                        <td><input type="text" id="mult-proc-text-3" value="70%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-proc-min-4" value="0"></td>
+                        <td><input type="number" id="mult-proc-val-4" value="0" step="0.01"></td>
+                        <td><input type="text" id="mult-proc-text-4" value="<70%"></td>
+                    </tr>
+                </table>
+                
+                <table>
+                    <tr>
+                        <th colspan="3">Mora</th>
+                    </tr>
+                    <tr>
+                        <th>Desde %</th>
+                        <th>Multiplicador</th>
+                        <th>Texto</th>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-mora-min-0" value="0"></td>
+                        <td><input type="number" id="mult-mora-val-0" value="1.05" step="0.01"></td>
+                        <td><input type="text" id="mult-mora-text-0" value="0-2%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-mora-min-1" value="3"></td>
+                        <td><input type="number" id="mult-mora-val-1" value="0.95" step="0.01"></td>
+                        <td><input type="text" id="mult-mora-text-1" value="3-7%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-mora-min-2" value="8"></td>
+                        <td><input type="number" id="mult-mora-val-2" value="0.9" step="0.01"></td>
+                        <td><input type="text" id="mult-mora-text-2" value="8-9%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-mora-min-3" value="10"></td>
+                        <td><input type="number" id="mult-mora-val-3" value="0.85" step="0.01"></td>
+                        <td><input type="text" id="mult-mora-text-3" value="10-14%"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" id="mult-mora-min-4" value="15"></td>
+                        <td><input type="number" id="mult-mora-val-4" value="0.7" step="0.01"></td>
+                        <td><input type="text" id="mult-mora-text-4" value="15%+"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button class="preview" onclick="previewChanges()">👁️ Previsualizar Cambios</button>
+            <button class="save-local" onclick="saveToLocal()">💾 Guardar en Navegador</button>
+            <button onclick="generateConfig()">📄 Generar config.js</button>
+            <button onclick="resetDefaults()">🔄 Restaurar Valores por Defecto</button>
+        </div>
+        
+        <div class="success" id="saveSuccess">
+            ✅ Configuración guardada en el navegador exitosamente
+        </div>
+        
+        <div class="output-section" id="outputSection">
+            <h2>📄 Nuevo config.js generado</h2>
+            <div class="info">
+                📋 Copia este código y reemplaza el contenido del archivo <strong>config.js</strong> en tu repositorio de GitHub
+            </div>
+            <textarea id="configOutput" readonly></textarea>
+            <div class="button-group">
+                <button onclick="copyToClipboard()">📋 Copiar al Portapapeles</button>
+                <button onclick="downloadConfig()">💾 Descargar config.js</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="config.js"></script>
+    <script>
+        // Formatear número con puntos
+        function formatearGuaranies(num) {
+            return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+        
+        // Remover formato para obtener número
+        function limpiarFormato(str) {
+            return str.replace(/\./g, '');
+        }
+        
+        // Formatear input mientras se escribe
+        function formatearInput(input) {
+            const valor = limpiarFormato(input.value);
+            if (valor) {
+                input.value = formatearGuaranies(parseInt(valor, 10));
+            }
+        }
+        
+        // Cargar valores desde config.js o localStorage
+        function loadValues() {
+            // Verificar si CONFIG existe
+            if (typeof CONFIG === 'undefined') {
+                console.warn('CONFIG no está definido. Asegúrate de que config.js esté en el repositorio.');
+                return;
+            }
+            
+            const savedConfig = localStorage.getItem('comisionesConfig');
+            const config = savedConfig ? JSON.parse(savedConfig) : CONFIG;
+            
+            // Base
+            document.getElementById('base').value = formatearGuaranies(config.base);
+            
+            // Metas
+            for (let i = 0; i < 6; i++) {
+                document.getElementById(`meta-interno-${i}`).value = formatearGuaranies(config.metas.montoInterno[i]);
+                document.getElementById(`meta-externo-${i}`).value = formatearGuaranies(config.metas.montoExterno[i]);
+                document.getElementById(`meta-recuperado-${i}`).value = formatearGuaranies(config.metas.montoRecuperado[i]);
+                document.getElementById(`meta-cantidad-${i}`).value = config.metas.cantidad[i];
+            }
+            
+            // Premios
+            for (let i = 0; i < 6; i++) {
+                document.getElementById(`premio-carrera-${i}`).value = formatearGuaranies(config.pagos.carrera[i]);
+                document.getElementById(`premio-interno-${i}`).value = formatearGuaranies(config.pagos.montoInterno[i]);
+                document.getElementById(`premio-externo-${i}`).value = formatearGuaranies(config.pagos.montoExterno[i]);
+                document.getElementById(`premio-recuperado-${i}`).value = formatearGuaranies(config.pagos.montoRecuperado[i]);
+                document.getElementById(`premio-cantidad-${i}`).value = formatearGuaranies(config.pagos.cantidad[i]);
+                document.getElementById(`premio-equipo-${i}`).value = formatearGuaranies(config.pagos.equipo[i]);
+            }
+            
+            // Multiplicadores
+            for (let i = 0; i < config.multiplicadores.conversion.length; i++) {
+                if (document.getElementById(`mult-conv-min-${i}`)) {
+                    document.getElementById(`mult-conv-min-${i}`).value = config.multiplicadores.conversion[i].min;
+                    document.getElementById(`mult-conv-val-${i}`).value = config.multiplicadores.conversion[i].mult;
+                    document.getElementById(`mult-conv-text-${i}`).value = config.multiplicadores.conversion[i].text;
+                }
+            }
+            
+            for (let i = 0; i < config.multiplicadores.empatia.length; i++) {
+                if (document.getElementById(`mult-emp-min-${i}`)) {
+                    document.getElementById(`mult-emp-min-${i}`).value = config.multiplicadores.empatia[i].min;
+                    document.getElementById(`mult-emp-val-${i}`).value = config.multiplicadores.empatia[i].mult;
+                    document.getElementById(`mult-emp-text-${i}`).value = config.multiplicadores.empatia[i].text;
+                }
+            }
+            
+            for (let i = 0; i < config.multiplicadores.proceso.length; i++) {
+                if (document.getElementById(`mult-proc-min-${i}`)) {
+                    document.getElementById(`mult-proc-min-${i}`).value = config.multiplicadores.proceso[i].min;
+                    document.getElementById(`mult-proc-val-${i}`).value = config.multiplicadores.proceso[i].mult;
+                    document.getElementById(`mult-proc-text-${i}`).value = config.multiplicadores.proceso[i].text;
+                }
+            }
+            
+            for (let i = 0; i < config.multiplicadores.mora.length; i++) {
+                if (document.getElementById(`mult-mora-min-${i}`)) {
+                    document.getElementById(`mult-mora-min-${i}`).value = config.multiplicadores.mora[i].min;
+                    document.getElementById(`mult-mora-val-${i}`).value = config.multiplicadores.mora[i].mult;
+                    document.getElementById(`mult-mora-text-${i}`).value = config.multiplicadores.mora[i].text;
+                }
+            }
+        }
+        
+        // Obtener configuración actual desde los inputs
+        function getCurrentConfig() {
+            const config = {
+                base: parseInt(limpiarFormato(document.getElementById('base').value)),
+                niveles: ['Capilla', 'Junior', 'Senior A', 'Senior B', 'Máster', 'Genio'],
+                iconos: ['🏠', '👤', '⭐', '💎', '👑', '🏆'],
+                metas: {
+                    montoInterno: [],
+                    montoExterno: [],
+                    montoRecuperado: [],
+                    cantidad: []
+                },
+                pagos: {
+                    carrera: [],
+                    montoInterno: [],
+                    montoExterno: [],
+                    montoRecuperado: [],
+                    cantidad: [],
+                    equipo: []
+                },
+                multiplicadores: {
+                    conversion: [],
+                    empatia: [],
+                    proceso: [],
+                    mora: []
+                }
+            };
+            
+            // Leer metas
+            for (let i = 0; i < 6; i++) {
+                config.metas.montoInterno.push(parseInt(limpiarFormato(document.getElementById(`meta-interno-${i}`).value)));
+                config.metas.montoExterno.push(parseInt(limpiarFormato(document.getElementById(`meta-externo-${i}`).value)));
+                config.metas.montoRecuperado.push(parseInt(limpiarFormato(document.getElementById(`meta-recuperado-${i}`).value)));
+                config.metas.cantidad.push(parseInt(document.getElementById(`meta-cantidad-${i}`).value));
+            }
+            
+            // Leer premios
+            for (let i = 0; i < 6; i++) {
+                config.pagos.carrera.push(parseInt(limpiarFormato(document.getElementById(`premio-carrera-${i}`).value)));
+                config.pagos.montoInterno.push(parseInt(limpiarFormato(document.getElementById(`premio-interno-${i}`).value)));
+                config.pagos.montoExterno.push(parseInt(limpiarFormato(document.getElementById(`premio-externo-${i}`).value)));
+                config.pagos.montoRecuperado.push(parseInt(limpiarFormato(document.getElementById(`premio-recuperado-${i}`).value)));
+                config.pagos.cantidad.push(parseInt(limpiarFormato(document.getElementById(`premio-cantidad-${i}`).value)));
+                config.pagos.equipo.push(parseInt(limpiarFormato(document.getElementById(`premio-equipo-${i}`).value)));
+            }
+            
+            // Leer multiplicadores
+            for (let i = 0; i < 7; i++) {
+                if (document.getElementById(`mult-conv-min-${i}`)) {
+                    config.multiplicadores.conversion.push({
+                        min: parseInt(document.getElementById(`mult-conv-min-${i}`).value),
+                        mult: parseFloat(document.getElementById(`mult-conv-val-${i}`).value),
+                        text: document.getElementById(`mult-conv-text-${i}`).value
+                    });
+                }
+            }
+            
+            for (let i = 0; i < 5; i++) {
+                if (document.getElementById(`mult-emp-min-${i}`)) {
+                    config.multiplicadores.empatia.push({
+                        min: parseInt(document.getElementById(`mult-emp-min-${i}`).value),
+                        mult: parseFloat(document.getElementById(`mult-emp-val-${i}`).value),
+                        text: document.getElementById(`mult-emp-text-${i}`).value
+                    });
+                }
+            }
+            
+            for (let i = 0; i < 5; i++) {
+                if (document.getElementById(`mult-proc-min-${i}`)) {
+                    config.multiplicadores.proceso.push({
+                        min: parseInt(document.getElementById(`mult-proc-min-${i}`).value),
+                        mult: parseFloat(document.getElementById(`mult-proc-val-${i}`).value),
+                        text: document.getElementById(`mult-proc-text-${i}`).value
+                    });
+                }
+            }
+            
+            for (let i = 0; i < 5; i++) {
+                if (document.getElementById(`mult-mora-min-${i}`)) {
+                    config.multiplicadores.mora.push({
+                        min: parseInt(document.getElementById(`mult-mora-min-${i}`).value),
+                        mult: parseFloat(document.getElementById(`mult-mora-val-${i}`).value),
+                        text: document.getElementById(`mult-mora-text-${i}`).value
+                    });
+                }
+            }
+            
+            return config;
+        }
+        
+        // Previsualizar cambios
+        function previewChanges() {
+            const config = getCurrentConfig();
+            
+            // Calcular máximo subtotal
+            const maxSubtotal = config.base + 
+                config.pagos.carrera[5] + 
+                config.pagos.montoInterno[5] + 
+                config.pagos.montoExterno[5] + 
+                config.pagos.montoRecuperado[5] + 
+                config.pagos.cantidad[5] + 
+                config.pagos.equipo[5];
+            
+            alert(`Vista previa de cambios:\n\n` +
+                  `Base: ${formatearGuaranies(config.base)} Gs\n` +
+                  `Máximo subtotal calculado: ${formatearGuaranies(maxSubtotal)} Gs\n\n` +
+                  `Ejemplo para nivel Genio:\n` +
+                  `- Meta Interno: ${formatearGuaranies(config.metas.montoInterno[5])} Gs\n` +
+                  `- Premio Interno: ${formatearGuaranies(config.pagos.montoInterno[5])} Gs\n` +
+                  `- Meta Cantidad: ${config.metas.cantidad[5]} desembolsos\n` +
+                  `- Premio Cantidad: ${formatearGuaranies(config.pagos.cantidad[5])} Gs`);
+        }
+        
+        // Guardar en localStorage
+        function saveToLocal() {
+            const config = getCurrentConfig();
+            localStorage.setItem('comisionesConfig', JSON.stringify(config));
+            
+            const success = document.getElementById('saveSuccess');
+            success.style.display = 'block';
+            setTimeout(() => {
+                success.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Generar config.js
+        function generateConfig() {
+            const config = getCurrentConfig();
+            
+            const configContent = `// Configuración del Sistema de Comisiones Comerciales
+// Este archivo contiene todos los valores configurables del sistema
+// Para modificar valores, usar /admin.html
+
+const CONFIG = ${JSON.stringify(config, null, 4)};`;
+            
+            document.getElementById('configOutput').value = configContent;
+            document.getElementById('outputSection').style.display = 'block';
+            
+            // Scroll hasta la sección de output
+            document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Copiar al portapapeles
+        function copyToClipboard() {
+            const textarea = document.getElementById('configOutput');
+            textarea.select();
+            document.execCommand('copy');
+            alert('✅ Código copiado al portapapeles');
+        }
+        
+        // Descargar config.js
+        function downloadConfig() {
+            const content = document.getElementById('configOutput').value;
+            const blob = new Blob([content], { type: 'text/javascript' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'config.js';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Restaurar valores por defecto
+        function resetDefaults() {
+            if (confirm('¿Estás seguro de restaurar todos los valores por defecto?\n\nEsto sobrescribirá todos los cambios actuales.')) {
+                localStorage.removeItem('comisionesConfig');
+                // Cargar valores por defecto desde CONFIG original
+                if (typeof CONFIG !== 'undefined') {
+                    localStorage.setItem('comisionesConfig', JSON.stringify(CONFIG));
+                }
+                loadValues();
+                alert('✅ Valores restaurados a la configuración por defecto');
+            }
+        }
+        
+        // Cargar valores al iniciar
+        window.onload = function() {
+            loadValues();
+        };
+    </script>
+</body>
+</html>
