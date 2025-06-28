@@ -932,19 +932,8 @@
             }
         }
         
-        // Descargar PDF
-        function descargarPDF() {
-            function escapeHTML(str) {
-                return String(str)
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;');
-            }
-
-            function getValue(id, prop = 'value') {
-                const el = document.getElementById(id);
-                return escapeHTML(el ? el[prop] : '');
-            }
+       // Descargar PDF
+function descargarPDF() {
 
             // Guardar valores actuales
             const comisionTotal = getValue('totalComision', 'textContent');
