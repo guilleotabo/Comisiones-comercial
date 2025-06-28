@@ -145,7 +145,7 @@ const CONFIG = {
         "empatia": [
             {
                 "min": 96,
-                "mult": 1.1,
+                "mult": 1,
                 "text": "96%+"
             },
             {
